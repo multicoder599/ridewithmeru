@@ -104,7 +104,51 @@
             box-shadow: 0 10px 20px rgba(0, 214, 100, 0.2);
         }
 
-        /* --- FOOTER LINKS --- */
+        /* --- SMART POPUP STYLES --- */
+        #statusModal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            border-radius: 32px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 40px;
+            font-weight: 800;
+        }
+
+        .success-icon { background: #f0fff4; color: var(--primary); }
+        .error-icon { background: #fff5f5; color: var(--error); }
+
         .footer-links { margin-top: 25px; font-size: 0.9rem; color: var(--gray); }
         .footer-links a { color: var(--primary); text-decoration: none; font-weight: 700; }
         
@@ -114,7 +158,6 @@
             border-top: 1px solid #f1f5f9;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 480px) {
             .register-card { padding: 30px 20px; border-radius: 24px; }
         }
@@ -165,64 +208,92 @@
         </div>
     </div>
 
+    <div id="statusModal">
+        <div class="modal-content" id="modalContent">
+            <div id="modalIcon" class="modal-icon">✓</div>
+            <h2 id="modalTitle" style="font-size: 1.5rem; color: #0f172a; margin-bottom: 12px;">Success!</h2>
+            <p id="modalMessage" style="color: #64748b; line-height: 1.6; margin-bottom: 30px; font-size: 0.95rem;"></p>
+            <button id="modalBtn" class="btn-register">Continue</button>
+        </div>
+    </div>
+
     <script>
-        // Configuration: Point to your live Meru Hub
         const API_URL = "https://ridewithmeru.onrender.com";
-    
+
+        // Logic to show/hide the Smart Popup
+        function showSmartPopup(isSuccess, title, message) {
+            const modal = document.getElementById('statusModal');
+            const content = document.getElementById('modalContent');
+            const icon = document.getElementById('modalIcon');
+            const titleEl = document.getElementById('modalTitle');
+            const msgEl = document.getElementById('modalMessage');
+            const btn = document.getElementById('modalBtn');
+
+            // Reset and apply styles
+            icon.className = isSuccess ? "modal-icon success-icon" : "modal-icon error-icon";
+            icon.innerText = isSuccess ? "✓" : "!";
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            btn.style.background = isSuccess ? "#0f172a" : "#ff4757";
+
+            btn.onclick = () => {
+                if (isSuccess) {
+                    window.location.href = "login.html";
+                } else {
+                    modal.style.display = "none";
+                    modal.style.opacity = "0";
+                }
+            };
+
+            // Show animation
+            modal.style.display = "flex";
+            setTimeout(() => {
+                modal.style.opacity = "1";
+                content.style.transform = "scale(1)";
+            }, 10);
+        }
+
         document.getElementById('registrationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-    
-            // 1. Collect data from your form fields
+
             const name = document.getElementById('fullname').value;
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
             const password = document.getElementById('password').value;
-            const role = "Customer"; // Defaulting to Customer for now
-    
-            // 2. Visual Feedback: Loading state
+
             const submitBtn = e.target.querySelector('button');
             const originalText = submitBtn.innerText;
-            submitBtn.innerText = "Creating Account...";
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = "0.7";
-    
+            setLoadingState(submitBtn, true, "Creating Account...");
+
             try {
-                // 3. Send the POST request to your live Render server
                 const response = await fetch(`${API_URL}/api/register`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include', // Ensures cross-site security is handled
-                    body: JSON.stringify({ name, email, phone, password, role })
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include', 
+                    body: JSON.stringify({ name, email, phone, password, role: "Customer" })
                 });
-    
+
                 const data = await response.json();
-    
-                if (data.success) {
-                    // 4. Success: Move to login
-                    alert("Karibu! Account created successfully. Please login.");
-                    window.location.href = "login.html";
+
+                if (response.ok && data.success) {
+                    showSmartPopup(true, "Karibu, " + name.split(' ')[0] + "!", "Your account is ready. Let's get you moving around Meru.");
                 } else {
-                    // 5. Handle errors (e.g., email already exists)
-                    alert("Registration Failed: " + (data.message || "Unknown error"));
-                    resetButton(submitBtn, originalText);
+                    showSmartPopup(false, "Oops!", data.message || "Registration failed. Please check your details.");
+                    setLoadingState(submitBtn, false, originalText);
                 }
-    
+
             } catch (error) {
                 console.error("Connection Error:", error);
-                alert("Could not connect to the Meru server. Please check your internet.");
-                resetButton(submitBtn, originalText);
+                showSmartPopup(false, "Connection Lost", "The Meru Hub is taking a moment. Please check your internet or wait 30s.");
+                setLoadingState(submitBtn, false, originalText);
             }
         });
-    
-        // Helper to reset button state on failure
-        function resetButton(btn, text) {
+
+        function setLoadingState(btn, isLoading, text) {
             btn.innerText = text;
-            btn.disabled = false;
-            btn.style.opacity = "1";
+            btn.disabled = isLoading;
+            btn.style.opacity = isLoading ? "0.7" : "1";
         }
     </script>
-
 </body>
 </html>

@@ -20,36 +20,22 @@
 
         /* --- NAVIGATION --- */
         nav {
-            position: sticky;
-            top: 0;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(15px);
-            z-index: 1000;
-            border-bottom: 1px solid #f1f5f9;
-            height: 85px;
-            display: flex;
-            align-items: center;
+            position: sticky; top: 0; background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px); z-index: 1000; border-bottom: 1px solid #f1f5f9;
+            height: 85px; display: flex; align-items: center;
         }
 
         .container { width: 100%; max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
-
         .nav-content { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .logo { font-size: 1.5rem; font-weight: 800; text-decoration: none; color: var(--dark); }
         .logo span { color: var(--primary); }
-
         .nav-right { display: flex; gap: 15px; align-items: center; }
         
         /* --- BUTTONS --- */
         .btn {
-            padding: 12px 24px;
-            border-radius: 100px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: 0.3s;
-            display: inline-block;
-            cursor: pointer;
-            border: none;
-            font-size: 0.9rem;
+            padding: 12px 24px; border-radius: 100px; font-weight: 700;
+            text-decoration: none; transition: 0.3s; display: inline-block;
+            cursor: pointer; border: none; font-size: 0.9rem;
         }
         .btn-outline { border: 2px solid var(--dark); color: var(--dark); }
         .btn-solid { background: var(--primary); color: var(--dark); }
@@ -61,49 +47,95 @@
         .hero-text { flex: 1; }
         .hero-text h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 20px; letter-spacing: -2px; }
         .hero-text p { font-size: 1.2rem; color: var(--gray); margin-bottom: 30px; max-width: 500px; }
-
         .hero-image { flex: 1; display: flex; justify-content: center; }
-        .main-img-sim { 
-            width: 100%; height: 450px; 
-            background: linear-gradient(135deg, #e0f2fe 0%, #dcfce7 100%); 
-            border-radius: 40px; 
-            display: flex; align-items: center; justify-content: center; font-size: 5rem;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+
+        /* --- MOCKUP ANIMATIONS (Restored) --- */
+        .minimal-mockup {
+            width: 290px; height: 580px; background: #ffffff;
+            border: 10px solid #121417; border-radius: 44px;
+            position: relative; overflow: hidden; box-shadow: 0 50px 100px rgba(0,0,0,0.1);
+        }
+        .map-preview-canvas {
+            width: 100%; height: 100%; background-color: #f8fafc;
+            background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px);
+            background-size: 30px 30px; position: relative;
+        }
+        .route-line { position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0.6; }
+        
+        /* Vehicles */
+        .vehicle { position: absolute; z-index: 5; }
+        .v-card {
+            background: white; padding: 10px; border-radius: 14px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); font-size: 1.2rem;
+            position: relative; z-index: 2;
+        }
+        .v-1 { top: 75%; left: 20%; }
+        .v-2 { top: 45%; right: 15%; }
+        .v-3 { top: 15%; left: 45%; }
+        
+        .v-pulse {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 40px; height: 40px; background: var(--primary); border-radius: 50%;
+            opacity: 0.2; animation: pulse-ring 2.5s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.5; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
         }
 
-        /* --- SERVICES (Cards with Pictures) --- */
+        .map-label {
+            position: absolute; font-size: 0.75rem; font-weight: 700;
+            color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .label-town { bottom: 50px; left: 30px; }
+        .label-nkubu { top: 60px; right: 40px; }
+
+        .glass-info {
+            position: absolute; bottom: 30px; left: 20px; right: 20px;
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px);
+            padding: 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.5);
+            text-align: center;
+        }
+        .glass-info strong { display: block; font-size: 0.9rem; color: #000; }
+        .glass-info span { font-size: 0.75rem; color: #64748b; }
+
+        /* --- SERVICES (Cards with Images) --- */
         .section { padding: 100px 0; }
         .section-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 50px; text-align: center; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
         .card { 
-            background: var(--white); 
-            border-radius: 30px; 
-            overflow: hidden; 
-            border: 1px solid #f1f5f9;
-            transition: 0.3s;
-            text-decoration: none;
-            color: inherit;
+            background: var(--white); border-radius: 30px; overflow: hidden; 
+            border: 1px solid #f1f5f9; transition: 0.3s; cursor: pointer; text-decoration: none; color: inherit;
         }
         .card:hover { transform: translateY(-10px); box-shadow: 0 30px 50px rgba(0,0,0,0.08); }
 
         .card-img {
-            height: 200px;
-            width: 100%;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: flex-end;
-            padding: 20px;
+            height: 200px; width: 100%; background-size: cover; background-position: center;
+            display: flex; align-items: flex-end; padding: 20px; transition: transform 0.5s ease;
         }
 
-        .img-boda { background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80&w=800'); }
-        .img-bolt { background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800'); }
-        .img-delivery { background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&q=80&w=800'); }
+        /* Specific Images Restored */
+        .img-boda { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('https://businesstoday.co.ke/wp-content/uploads/2025/02/Bolt-electric-motorbikes-in-kenya.jpg'); }
+        .img-bolt { background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url('https://biznakenya.com/wp-content/uploads/2021/03/bolt-kenya.jpg'); }
+        .img-delivery { background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&q=80&w=800'); }
+
+        .card:hover .card-img { transform: scale(1.05); }
 
         .card-body { padding: 30px; }
         .card-body h3 { margin-bottom: 10px; font-weight: 700; }
         .card-body p { color: var(--gray); font-size: 0.95rem; margin-bottom: 20px; }
+
+        /* --- AUTH MODAL (Popup) --- */
+        #authModal {
+            display: none; position: fixed; z-index: 10000; inset: 0; 
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); 
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-content {
+            background: white; width: 100%; max-width: 400px; padding: 40px; 
+            border-radius: 32px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
 
         /* --- FOOTER --- */
         footer { background: var(--dark); color: white; padding: 80px 0 40px; }
@@ -113,9 +145,8 @@
         .footer-links h4 { margin-bottom: 20px; font-size: 1.1rem; }
         .footer-links ul { list-style: none; }
         .footer-links li { margin-bottom: 12px; }
-        .footer-links a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; }
+        .footer-links a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; cursor: pointer; }
 
-        /* --- RESPONSIVE --- */
         @media (max-width: 992px) {
             .hero { flex-direction: column; text-align: center; }
             .hero-text p { margin: 0 auto 30px; }
@@ -130,7 +161,7 @@
         <a href="index.html" class="logo">Ride<span>WithMeru</span></a>
         <div class="nav-right">
             <a href="register-rider.html" class="btn btn-outline">Register as a Rider</a>
-            <a href="register.html" class="btn btn-dark">Get Started</a>
+            <a href="login.html" class="btn btn-dark">Sign In</a>
         </div>
     </div>
 </nav>
@@ -141,35 +172,35 @@
             <div class="hero-text">
                 <span style="color: var(--primary); font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;">Meru's #1 Logistics App</span>
                 <h1>Reliable rides. <br>Vetted partners.</h1>
-                <p>We connect the people of Meru with safe transport and fast delivery. Every driver is hand-vetted by our local team.</p>
+                <p>Connecting the people of Meru with safe transport and fast delivery. Every driver is hand-vetted by our local team.</p>
                 <div style="display: flex; gap: 15px; justify-content: inherit;">
-                    <a href="book-ride.html" class="btn btn-solid" style="padding: 18px 40px;">Book a Ride</a>
+                    <button onclick="protectedAction()" class="btn btn-solid" style="padding: 18px 40px;">Book a Ride</button>
                     <a href="register-rider.html" class="btn btn-outline" style="padding: 18px 40px;">Drive & Earn</a>
                 </div>
             </div>
+            
             <div class="hero-image">
                 <div class="minimal-mockup">
                     <div class="map-preview-canvas">
-                        
                         <svg class="route-line" viewBox="0 0 200 400">
                             <path d="M50,350 Q80,250 150,200 T120,50" fill="none" stroke="#00d664" stroke-width="4" stroke-dasharray="8,8" />
                         </svg>
-            
+
                         <div class="vehicle v-1">
                             <div class="v-card">🏍️</div>
                             <div class="v-pulse"></div>
                         </div>
-            
+
                         <div class="vehicle v-2">
                             <div class="v-card">🚕</div>
                             <div class="v-pulse"></div>
                         </div>
-            
+
                         <div class="vehicle v-3">
                             <div class="v-card">📦</div>
                             <div class="v-pulse"></div>
                         </div>
-            
+
                         <div class="map-label label-town">Meru Town</div>
                         <div class="map-label label-nkubu">Nkubu</div>
                         
@@ -180,187 +211,60 @@
                     </div>
                 </div>
             </div>
-            
-            <style>
-                .img-delivery {
-    /* High-quality delivery/logistics imagery */
-    background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), 
-                url('https://images.creativemarket.com/0.1.0/ps/4710577/1822/1216/m1/fpnw/wm0/market-place-logo-.jpg?1530775986&s=9d32300a828ea9980d433614c16ec5ba');
-    background-size: cover;
-    background-position: center;
-    transition: transform 0.5s ease;
-}
-
-/* Consistent zoom effect */
-.card:hover .img-delivery {
-    transform: scale(1.1);
-}
-                .img-bolt {
-    /* Professional saloon/taxi imagery with a dark overlay for text readability */
-    background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), 
-                url('https://biznakenya.com/wp-content/uploads/2021/03/bolt-kenya.jpg');
-    background-size: cover;
-    background-position: center;
-    transition: transform 0.5s ease;
-}
-
-/* Ensure the zoom effect is consistent across all cards */
-.card:hover .img-bolt {
-    transform: scale(1.1);
-}
-                .img-boda {
-    /* High-quality Boda/Motorcycle imagery */
-    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), 
-                url('https://businesstoday.co.ke/wp-content/uploads/2025/02/Bolt-electric-motorbikes-in-kenya.jpg');
-    background-size: cover;
-    background-position: center;
-    transition: transform 0.5s ease;
-}
-
-/* Add a hover effect to make the image "come alive" */
-.card:hover .img-boda {
-    transform: scale(1.1);
-}
-                /* MOCKUP FRAME */
-                .minimal-mockup {
-                    width: 290px;
-                    height: 580px;
-                    background: #ffffff;
-                    border: 10px solid #121417;
-                    border-radius: 44px;
-                    position: relative;
-                    overflow: hidden;
-                    box-shadow: 0 50px 100px rgba(0,0,0,0.1);
-                }
-            
-                /* MAP CANVAS */
-                .map-preview-canvas {
-                    width: 100%;
-                    height: 100%;
-                    background-color: #f8fafc;
-                    background-image: 
-                        radial-gradient(#e2e8f0 1.5px, transparent 1.5px);
-                    background-size: 30px 30px;
-                    position: relative;
-                }
-            
-                /* ROUTE SVG */
-                .route-line {
-                    position: absolute;
-                    width: 100%;
-                    height: 100%;
-                    top: 0;
-                    left: 0;
-                    opacity: 0.6;
-                }
-            
-                /* VEHICLE MARKERS */
-                .vehicle {
-                    position: absolute;
-                    z-index: 5;
-                }
-                .v-card {
-                    background: white;
-                    padding: 10px;
-                    border-radius: 14px;
-                    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-                    font-size: 1.2rem;
-                    position: relative;
-                    z-index: 2;
-                }
-            
-                .v-1 { top: 75%; left: 20%; }
-                .v-2 { top: 45%; right: 15%; }
-                .v-3 { top: 15%; left: 45%; }
-            
-                .v-pulse {
-                    position: absolute;
-                    top: 50%; left: 50%;
-                    transform: translate(-50%, -50%);
-                    width: 40px; height: 40px;
-                    background: var(--primary);
-                    border-radius: 50%;
-                    opacity: 0.2;
-                    animation: pulse-ring 2.5s infinite;
-                }
-            
-                @keyframes pulse-ring {
-                    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.5; }
-                    100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
-                }
-            
-                /* MAP LABELS */
-                .map-label {
-                    position: absolute;
-                    font-size: 0.75rem;
-                    font-weight: 700;
-                    color: #94a3b8;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                }
-                .label-town { bottom: 50px; left: 30px; }
-                .label-nkubu { top: 60px; right: 40px; }
-            
-                /* GLASS INFO BOX */
-                .glass-info {
-                    position: absolute;
-                    bottom: 30px;
-                    left: 20px;
-                    right: 20px;
-                    background: rgba(255, 255, 255, 0.7);
-                    backdrop-filter: blur(10px);
-                    padding: 15px;
-                    border-radius: 20px;
-                    border: 1px solid rgba(255,255,255,0.5);
-                    text-align: center;
-                }
-                .glass-info strong { display: block; font-size: 0.9rem; color: #000; }
-                .glass-info span { font-size: 0.75rem; color: #64748b; }
-            </style>
         </section>
 
         <section class="section" id="services">
             <h2 class="section-title">Our Premier Services</h2>
             <div class="grid">
-                <a href="boda-service.html" class="card">
-                    <div class="card-img img-boda" style="position: relative; overflow: hidden;">
-                        <span style="position: absolute; top: 15px; left: 15px; background: var(--primary); color: #000; padding: 4px 10px; border-radius: 100px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;">Verified Riders</span>
-                        
-                        <span style="color: white; font-weight: 800; font-size: 1.2rem; z-index: 2;">Boda Express</span>
+                <div class="card" onclick="protectedAction()">
+                    <div class="card-img img-boda">
+                        <span style="background: var(--primary); color: #000; padding: 4px 10px; border-radius: 100px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; position: absolute; top: 15px; left: 15px;">Verified Riders</span>
+                        <span style="color: white; font-weight: 800; font-size: 1.2rem;">Boda Express</span>
                     </div>
                     <div class="card-body">
                         <p>Fast and efficient boda rides within Meru town and its environs.</p>
                         <span style="color: var(--primary); font-weight: 700;">Book Now &rarr;</span>
                     </div>
-                </a>
+                </div>
 
-                <a href="taxi-service.html" class="card">
-                    <div class="card-img img-bolt" style="position: relative; overflow: hidden;">
-                        <span style="position: absolute; top: 15px; left: 15px; background: var(--primary); color: #000; padding: 4px 10px; border-radius: 100px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; z-index: 3;">Vetted Saloons</span>
-                        
-                        <span style="color: white; font-weight: 800; font-size: 1.2rem; z-index: 2;">Bolt Taxi</span>
+                <div class="card" onclick="protectedAction()">
+                    <div class="card-img img-bolt">
+                        <span style="background: var(--primary); color: #000; padding: 4px 10px; border-radius: 100px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; position: absolute; top: 15px; left: 15px;">Vetted Saloons</span>
+                        <span style="color: white; font-weight: 800; font-size: 1.2rem;">Bolt Taxi</span>
                     </div>
                     <div class="card-body">
                         <p>Premium saloon cars for your comfort and professional travel needs.</p>
                         <span style="color: var(--primary); font-weight: 700;">Book Now &rarr;</span>
                     </div>
-                </a>
+                </div>
 
-                <a href="delivery-service.html" class="card">
-                    <div class="card-img img-delivery" style="position: relative; overflow: hidden;">
-                        <span style="position: absolute; top: 15px; left: 15px; background: var(--primary); color: #000; padding: 4px 10px; border-radius: 100px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; z-index: 3;">Verified Shops</span>
-                        
-                        <span style="color: white; font-weight: 800; font-size: 1.2rem; z-index: 2;">Retail Delivery</span>
+                <div class="card" onclick="protectedAction()">
+                    <div class="card-img img-delivery">
+                        <span style="background: var(--primary); color: #000; padding: 4px 10px; border-radius: 100px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; position: absolute; top: 15px; left: 15px;">Fast Delivery</span>
+                        <span style="color: white; font-weight: 800; font-size: 1.2rem;">Retail Delivery</span>
                     </div>
                     <div class="card-body">
-                        <p>Get products from your favorite Meru retailers delivered instantly to your door.</p>
+                        <p>Get products from your favorite Meru retailers delivered instantly.</p>
                         <span style="color: var(--primary); font-weight: 700;">Order Now &rarr;</span>
                     </div>
-                </a>
+                </div>
             </div>
         </section>
     </div>
 </main>
+
+<div id="authModal">
+    <div class="modal-content">
+        <div style="font-size: 3.5rem; margin-bottom: 20px;">🛡️</div>
+        <h2 style="letter-spacing: -1px; margin-bottom: 10px;">Login Required</h2>
+        <p style="color: var(--gray); line-height: 1.5; margin-bottom: 30px;">To ensure the safety of our riders and partners, you must have a verified account to book services.</p>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <a href="login.html" class="btn btn-dark" style="padding: 16px;">Sign In to Account</a>
+            <a href="register.html" class="btn btn-outline" style="padding: 16px;">Create New Account</a>
+            <button onclick="closeModal()" style="background:none; border:none; color:var(--gray); font-size:0.8rem; cursor:pointer; margin-top:10px;">Maybe Later</button>
+        </div>
+    </div>
+</div>
 
 <footer>
     <div class="container">
@@ -372,26 +276,56 @@
             <div class="footer-links">
                 <h4>Services</h4>
                 <ul>
-                    <li><a href="boda-service.html">Boda Rides</a></li>
-                    <li><a href="taxi-service.html">Taxi Booking</a></li>
-                    <li><a href="delivery-service.html">Retail Delivery</a></li>
+                    <li><a onclick="protectedAction()">Boda Rides</a></li>
+                    <li><a onclick="protectedAction()">Taxi Booking</a></li>
+                    <li><a onclick="protectedAction()">Retail Delivery</a></li>
                 </ul>
             </div>
             <div class="footer-links">
                 <h4>Support</h4>
                 <ul>
-                    <li><a href="trust.html">Trust & Safety</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
                     <li><a href="register-rider.html">Partner with Us</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Trust & Safety</a></li>
                 </ul>
             </div>
         </div>
-        <div style="border-top: 1px solid #1e293b; padding-top: 30px; font-size: 0.8rem; color: #64748b; display: flex; justify-content: space-between;">
-            <p>&copy; 2026 Ride with Meru. All rights reserved.</p>
-            <p>Built for Meru County</p>
+        <div style="border-top: 1px solid #1e293b; padding-top: 30px; font-size: 0.8rem; color: #64748b; text-align: center;">
+            <p>&copy; 2026 Ride with Meru. Built for Meru County.</p>
         </div>
     </div>
 </footer>
+
+<script>
+    const API_URL = "https://ridewithmeru.onrender.com";
+
+    async function protectedAction() {
+        try {
+            // Check if the user is logged in via your backend
+            const response = await fetch(`${API_URL}/api/user-data`, { credentials: 'include' });
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // If logged in, go straight to the dashboard/booking page
+                window.location.href = "d2.html";
+            } else {
+                // Not logged in? Show the smart popup
+                openModal();
+            }
+        } catch (error) {
+            // If server is down or no connection, show the modal as a fallback
+            openModal();
+        }
+    }
+
+    function openModal() {
+        document.getElementById('authModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('authModal').style.display = 'none';
+    }
+</script>
 
 </body>
 </html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Hub | RideWithMeru</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d664; 
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            --error: #ff4757;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--light-bg); color: var(--dark); display: flex; min-height: 100vh; }
+
+        /* --- LOADER --- */
+        #pageLoader {
+            position: fixed; inset: 0; background: var(--white);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 9999; transition: opacity 0.5s ease;
+        }
+
+        /* --- SIDEBAR --- */
+        aside {
+            width: 280px; background: var(--white); padding: 40px 24px;
+            display: flex; flex-direction: column; position: fixed;
+            height: 100vh; border-right: 1px solid var(--border); z-index: 100;
+        }
+
+        .logo { font-size: 1.25rem; font-weight: 800; color: var(--dark); text-decoration: none; margin-bottom: 50px; }
+        .logo span { color: var(--primary); }
+
+        .nav-menu { list-style: none; flex: 1; }
+        .nav-item { 
+            padding: 14px 18px; border-radius: 16px; margin-bottom: 8px; cursor: pointer; 
+            transition: 0.2s; display: flex; align-items: center; gap: 12px;
+            font-weight: 600; color: var(--gray); text-decoration: none;
+        }
+        .nav-item:hover, .nav-item.active { background: #f0fdf4; color: var(--primary); }
+
+        /* --- MAIN CONTENT --- */
+        main { flex: 1; margin-left: 280px; padding: 40px 5%; opacity: 0; transition: opacity 0.5s ease; }
+
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .user-greeting h1 { font-size: 1.75rem; font-weight: 800; letter-spacing: -1px; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .stat-card { background: var(--white); padding: 24px; border-radius: 24px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+        .stat-card span { font-size: 0.75rem; font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+        .stat-card h2 { font-size: 1.5rem; margin-top: 8px; }
+
+        /* --- WALLET SECTION --- */
+        .wallet-banner {
+            background: var(--dark); color: white; padding: 40px; border-radius: 32px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;
+        }
+        .balance-box p { opacity: 0.6; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; }
+        .balance-box h3 { font-size: 2.5rem; font-weight: 800; }
+
+        .btn-deposit { 
+            background: var(--primary); color: var(--dark); padding: 16px 32px; 
+            border-radius: 100px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s;
+        }
+        .btn-deposit:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0, 214, 100, 0.2); }
+
+        /* --- MODAL STYLES --- */
+        .modal-overlay {
+            display: none; position: fixed; z-index: 9000; inset: 0; 
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); 
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-card {
+            background: white; width: 100%; max-width: 500px; padding: 35px; 
+            border-radius: 32px; box-shadow: var(--shadow); transform: scale(0.9); transition: 0.3s;
+        }
+
+        .vehicle-option {
+            padding: 15px; border: 2px solid var(--border); border-radius: 16px; 
+            text-align: center; cursor: pointer; transition: 0.2s;
+        }
+        .vehicle-option.selected { border-color: var(--primary); background: #f0fdf4; color: var(--primary); }
+
+        input {
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border); 
+            background: var(--light-bg); margin-bottom: 15px; outline: none;
+        }
+        input:focus { border-color: var(--primary); background: white; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 1024px) {
+            aside { display: none; }
+            main { margin-left: 0; padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pageLoader">
+        <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <p id="loaderText" style="margin-top: 20px; font-weight: 700; color: var(--gray);">Authenticating Meru Hub...</p>
+    </div>
+
+    <aside>
+        <a href="index.html" class="logo">Ride<span>WithMeru</span></a>
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active">🏠 My Dashboard</a>
+            <a href="#" onclick="openBooking()" class="nav-item">🚗 Book a Ride</a>
+            <a href="#" class="nav-item">📦 Package Delivery</a>
+            <a href="#" class="nav-item">📄 Travel History</a>
+        </nav>
+        <a href="#" id="logoutBtn" class="nav-item" style="color: #ff4757; margin-top: auto; font-weight: 800;">🚪 Sign Out</a>
+    </aside>
+
+    <main id="dashboardMain">
+        <header>
+            <div class="user-greeting">
+                <h1 id="welcomeText">Karibu!</h1>
+                <p style="color: var(--gray);">Here is your Meru County travel summary.</p>
+            </div>
+            <div style="background: var(--white); padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border); font-weight: 700; font-size: 0.85rem;">
+                🟢 <span id="userRoleBadge">User</span>
+            </div>
+        </header>
+
+        <div class="wallet-banner">
+            <div class="balance-box">
+                <p>M-PESA WALLET BALANCE</p>
+                <h3 id="userBalance">Ksh 0.00</h3>
+            </div>
+            <button class="btn-deposit" onclick="triggerDeposit()">Top Up via M-Pesa</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span>Total Rides</span>
+                <h2 id="rideCount">0</h2>
+            </div>
+            <div class="stat-card">
+                <span>Deliveries</span>
+                <h2 id="deliveryCount">0</h2>
+            </div>
+            <div class="stat-card">
+                <span>Account Status</span>
+                <h2 style="color: var(--primary);">Verified</h2>
+            </div>
+        </div>
+
+        <div style="background: var(--white); padding: 30px; border-radius: 24px; border: 1px solid var(--border);">
+            <h3 style="margin-bottom: 20px;">Connected M-Pesa Number</h3>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="width: 50px; height: 50px; background: #f0fdf4; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📱</div>
+                <div>
+                    <p id="userPhone" style="font-weight: 800; font-size: 1.1rem;">+254 --- --- ---</p>
+                    <p style="font-size: 0.75rem; color: var(--gray); font-weight: 700;">DEFAULT PAYOUT NUMBER</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-card" id="bookingContent">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 style="letter-spacing: -1px;">Request a Ride</h2>
+                <button onclick="closeBooking()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray);">✕</button>
+            </div>
+            <form id="bookingForm">
+                <label style="font-size: 0.75rem; font-weight: 800; color: var(--gray); display: block; margin-bottom: 8px;">PICKUP</label>
+                <input type="text" id="pickup" placeholder="e.g. Meru Town Mall" required>
+                
+                <label style="font-size: 0.75rem; font-weight: 800; color: var(--gray); display: block; margin-bottom: 8px;">DESTINATION</label>
+                <input type="text" id="destination" placeholder="e.g. Makutano" required>
+
+                <label style="font-size: 0.75rem; font-weight: 800; color: var(--gray); display: block; margin-bottom: 12px;">VEHICLE TYPE</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 25px;">
+                    <div class="vehicle-option" onclick="selectVehicle(this, 'Boda', 50)">
+                        <div style="font-size: 1.5rem;">🏍️</div>
+                        <div style="font-size: 0.65rem; font-weight: 800; margin-top: 5px;">BODA</div>
+                    </div>
+                    <div class="vehicle-option" onclick="selectVehicle(this, 'Taxi', 250)">
+                        <div style="font-size: 1.5rem;">🚕</div>
+                        <div style="font-size: 0.65rem; font-weight: 800; margin-top: 5px;">TAXI</div>
+                    </div>
+                    <div class="vehicle-option" onclick="selectVehicle(this, 'Parcel', 100)">
+                        <div style="font-size: 1.5rem;">📦</div>
+                        <div style="font-size: 0.65rem; font-weight: 800; margin-top: 5px;">DELIVERY</div>
+                    </div>
+                </div>
+                <button type="submit" class="btn-deposit" style="width: 100%;">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="statusModal" class="modal-overlay">
+        <div class="modal-card" style="text-align: center; max-width: 400px;">
+            <div id="statusIcon" style="width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 30px;">✓</div>
+            <h2 id="statusTitle" style="margin-bottom: 10px;">Success</h2>
+            <p id="statusMessage" style="color: var(--gray); font-size: 0.9rem; margin-bottom: 25px; line-height: 1.5;"></p>
+            <button onclick="closeStatus()" class="btn-deposit" style="width: 100%; background: var(--dark); color: white;">Got it</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://ridewithmeru.onrender.com";
+        let selectedRide = { type: "", price: 0 };
+
+        // --- 1. SESSION SHIELD (Fail-Safe) ---
+        async function loadDashboard() {
+            // "Wake Up" Indicator
+            const wakeUpTimer = setTimeout(() => {
+                document.getElementById('loaderText').innerText = "Waking up the Meru Hub... (Server Cold Start)";
+            }, 3000);
+
+            try {
+                const response = await fetch(`${API_URL}/api/user-data`, { credentials: 'include' });
+                const data = await response.json();
+
+                clearTimeout(wakeUpTimer); // Cancel wake up text if successful
+
+                if (response.ok && data.success) {
+                    // Update UI
+                    document.getElementById('welcomeText').innerText = `Karibu, ${data.user.name.split(' ')[0]}!`;
+                    document.getElementById('userRoleBadge').innerText = data.user.role;
+                    document.getElementById('userPhone').innerText = data.user.phone || "No phone linked";
+                    
+                    // Reveal Content
+                    document.getElementById('pageLoader').style.opacity = "0";
+                    setTimeout(() => document.getElementById('pageLoader').style.display = "none", 500);
+                    document.getElementById('dashboardMain').style.opacity = "1";
+                } else {
+                    // Fail: Not logged in
+                    console.warn("Auth Failed: Redirecting to login");
+                    window.location.href = "login.html";
+                }
+            } catch (err) {
+                console.error("Connection Error:", err);
+                // Fail: Server Error
+                window.location.href = "login.html";
+            }
+        }
+
+        // --- 2. BOOKING LOGIC ---
+        function openBooking() {
+            document.getElementById('bookingModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('bookingContent').style.transform = "scale(1)", 10);
+        }
+
+        function closeBooking() {
+            document.getElementById('bookingModal').style.display = 'none';
+            document.getElementById('bookingContent').style.transform = "scale(0.9)";
+        }
+
+        function selectVehicle(el, type, price) {
+            document.querySelectorAll('.vehicle-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedRide = { type, price };
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!selectedRide.type) return alert("Select a vehicle first!");
+            
+            const pick = document.getElementById('pickup').value;
+            const dest = document.getElementById('destination').value;
+            
+            closeBooking();
+            showStatus(true, "Request Sent!", `Finding a ${selectedRide.type} for your trip from ${pick} to ${dest}. Check your phone for the M-Pesa STK Push of Ksh ${selectedRide.price}.`);
+        });
+
+        // --- 3. STATUS POPUP ---
+        function showStatus(isSuccess, title, msg) {
+            const icon = document.getElementById('statusIcon');
+            icon.innerText = isSuccess ? "✓" : "!";
+            icon.style.background = isSuccess ? "#f0fff4" : "#fff5f5";
+            icon.style.color = isSuccess ? var(--primary) : var(--error);
+            
+            document.getElementById('statusTitle').innerText = title;
+            document.getElementById('statusMessage').innerText = msg;
+            document.getElementById('statusModal').style.display = "flex";
+        }
+
+        function closeStatus() { document.getElementById('statusModal').style.display = "none"; }
+
+        function triggerDeposit() {
+            showStatus(true, "M-Pesa Top Up", "An STK Push has been sent to your phone. Enter your PIN to add funds to your RideWithMeru wallet.");
+        }
+
+        // --- 4. LOGOUT ---
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await fetch(`${API_URL}/api/logout`, { method: 'POST', credentials: 'include' });
+            window.location.href = "login.html";
+        });
+
+        // Initialize
+        loadDashboard();
+    </script>
+</body>
+</html>
