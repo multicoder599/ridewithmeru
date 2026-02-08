@@ -17,13 +17,13 @@ const PORT = process.env.PORT || 5000;
 const DB_URI = process.env.DATABASE_URL || "mongodb+srv://newtonmulti_db_user:RPKsmQdCgvlaWCOz@cluster0.khvzewx.mongodb.net/ridewithmeru?retryWrites=true&w=majority";
 
 // --- SECURITY & CORS ---
-app.use(helmet({ contentSecurityPolicy: false })); // Keeps CSP relaxed for internal scripts
-app.set('trust proxy', 1); // Crucial for Render's load balancer to handle cookies correctly
+app.use(helmet({ contentSecurityPolicy: false }));
+app.set('trust proxy', 1); // Crucial for Render's load balancer
 
 app.use(cors({ 
-    // If you stay on Render, keep this. If moving to Netlify, add that URL here.
-    origin: ["https://ridewithmeru.onrender.com", "http://localhost:3000"], 
-    credentials: true 
+    // ADD YOUR NETLIFY URL HERE
+    origin: ["https://ridewithmeru.netlify.app", "https://ridewithmeru.onrender.com", "http://localhost:3000"], 
+    credentials: true // Crucial for sessions/cookies
 }));
 
 // --- DB CONNECTION ---
@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // --- PATHING LOGIC ---
-// Points to the frontend folder located next to the backend folder
+// This remains for local testing or if you use Render to serve some assets
 const frontendPath = path.join(__dirname, '..', 'frontend');
 app.use(express.static(frontendPath));
 
@@ -50,9 +50,9 @@ app.use(session({
         collectionName: 'sessions' 
     }),
     cookie: {
-        secure: true,    // Required for HTTPS on Render
-        httpOnly: true,  // Protects against XSS
-        sameSite: 'none', // Allows cross-site cookie tracking for sessions
+        secure: true,      // Required for HTTPS
+        httpOnly: true,    // Protects against XSS
+        sameSite: 'none',  // Required for cross-domain sessions
         maxAge: 1000 * 60 * 60 * 24 
     }
 }));
@@ -108,7 +108,16 @@ app.get('/api/user-data', async (req, res) => {
     }
 });
 
-// SPA Catch-all (Serves index.html for any frontend route)
+// Logout API
+app.post('/api/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) return res.status(500).json({ success: false });
+        res.clearCookie('connect.sid', { sameSite: 'none', secure: true });
+        res.json({ success: true });
+    });
+});
+
+// Fallback
 app.get('*', (req, res) => {
     res.sendFile(path.join(frontendPath, 'index.html'));
 });
