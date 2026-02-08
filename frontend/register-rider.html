@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner with Us | Ride with Meru</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d664; 
+            --dark: #0f172a;
+            --gray: #64748b;
+            --white: #ffffff;
+            --light-bg: #f8fafc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--light-bg); color: var(--dark); line-height: 1.6; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            padding: 20px 5%;
+            background: var(--white);
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 1.3rem; font-weight: 800; text-decoration: none; color: var(--dark); }
+        .logo span { color: var(--primary); }
+
+        /* --- LAYOUT --- */
+        .onboarding-container {
+            max-width: 900px;
+            margin: 60px auto;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+            padding: 0 20px;
+        }
+
+        /* --- LEFT SIDE: INFO --- */
+        .info-panel h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+        .benefit-item { display: flex; gap: 15px; margin-bottom: 25px; }
+        .icon-circle { 
+            min-width: 44px; height: 44px; background: white; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* --- RIGHT SIDE: FORM --- */
+        .form-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .form-section { margin-bottom: 25px; }
+        .form-section h3 { margin-bottom: 15px; font-size: 1.1rem; border-left: 4px solid var(--primary); padding-left: 10px; }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; color: var(--gray); }
+        input, select {
+            width: 100%; padding: 14px; border: 1.5px solid #e2e8f0; border-radius: 12px;
+            font-size: 0.95rem; outline: none; transition: 0.3s; background: #fbfcfd;
+        }
+        input:focus { border-color: var(--primary); background: white; }
+
+        .file-upload {
+            border: 2px dashed #e2e8f0;
+            padding: 20px;
+            text-align: center;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 10px;
+        }
+        .file-upload:hover { border-color: var(--primary); background: #f0fff4; }
+
+        .btn-submit {
+            width: 100%; padding: 18px; background: var(--dark); color: white;
+            border: none; border-radius: 16px; font-weight: 800; font-size: 1rem;
+            cursor: pointer; transition: 0.3s; margin-top: 20px;
+        }
+        .btn-submit:hover { background: var(--primary); color: var(--dark); transform: translateY(-2px); }
+
+        /* --- MOBILE --- */
+        @media (max-width: 850px) {
+            .onboarding-container { grid-template-columns: 1fr; margin: 30px auto; }
+            .info-panel { text-align: center; }
+            .input-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">Ride<span>WithMeru</span></a>
+        <a href="login.html" style="text-decoration: none; font-weight: 700; color: var(--dark); font-size: 0.9rem;">Already a Partner?</a>
+    </nav>
+
+    <div class="onboarding-container">
+        <div class="info-panel">
+            <h1>Turn your miles <br>into money.</h1>
+            <p style="color: var(--gray); margin-bottom: 40px; font-size: 1.1rem;">Join Meru's most respected fleet. We value safety, local pride, and fair earnings.</p>
+            
+            <div class="benefit-item">
+                <div class="icon-circle">💰</div>
+                <div>
+                    <strong>Weekly Payouts</strong>
+                    <p style="font-size: 0.85rem; color: var(--gray);">Direct to your M-Pesa every Monday.</p>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <div class="icon-circle">🛡️</div>
+                <div>
+                    <strong>Local Vetting</strong>
+                    <p style="font-size: 0.85rem; color: var(--gray);">Physical vetting for your safety and the customer's.</p>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <div class="icon-circle">📈</div>
+                <div>
+                    <strong>Low Commission</strong>
+                    <p style="font-size: 0.85rem; color: var(--gray);">We keep our fees low so you earn more.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <form id="riderForm">
+                <div class="form-section">
+                    <h3>Personal Details</h3>
+                    <div class="input-grid">
+                        <div>
+                            <label>Full Name</label>
+                            <input type="text" placeholder="John Doe" required>
+                        </div>
+                        <div>
+                            <label>Phone (M-Pesa)</label>
+                            <input type="tel" placeholder="0712345678" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Vehicle Information</h3>
+                    <div class="input-grid">
+                        <div>
+                            <label>Vehicle Type</label>
+                            <select>
+                                <option>Boda Boda</option>
+                                <option>Taxi (Saloon)</option>
+                                <option>Delivery Van</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Number Plate</label>
+                            <input type="text" placeholder="KCP 001X" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Legal Documents (Photos)</h3>
+                    <label>National ID & Driving License</label>
+                    <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                        <span style="font-size: 1.5rem; display: block;">📸</span>
+                        <span style="font-size: 0.85rem; font-weight: 600;">Tap to upload documents</span>
+                        <input type="file" id="fileInput" style="display:none" multiple>
+                    </div>
+                    <p style="font-size: 0.7rem; color: var(--gray); text-align: center;">We accept clear photos of your ID (Front/Back) and DL.</p>
+                </div>
+
+                <button type="submit" class="btn-submit">Submit for Vetting</button>
+                <p style="font-size: 0.75rem; text-align: center; margin-top: 15px; color: var(--gray);">
+                    By submitting, you agree to the Ride with Meru partner terms.
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('riderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            this.querySelector('button').innerText = "Uploading Application...";
+            this.querySelector('button').style.opacity = "0.7";
+            
+            setTimeout(() => {
+                alert("Application Submitted! Our Meru vetting team will call you within 24 hours to schedule a physical inspection.");
+                window.location.href = "index.html";
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Dashboard | RideWithMeru</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d664; 
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--light-bg); color: var(--dark); display: flex; min-height: 100vh; }
+
+        /* --- SIDEBAR --- */
+        aside {
+            width: 280px;
+            background: var(--white);
+            padding: 40px 24px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            border-right: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        /* LOGO REDIRECT */
+        .logo-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            margin-bottom: 50px;
+            transition: 0.3s;
+        }
+        .logo-btn:hover { opacity: 0.8; transform: scale(0.98); }
+        
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; color: white; font-size: 1.2rem;
+        }
+        .logo-text { font-size: 1.25rem; font-weight: 800; color: var(--dark); letter-spacing: -1px; }
+        .logo-text span { color: var(--primary); }
+
+        .nav-menu { list-style: none; flex: 1; }
+        .nav-item { 
+            padding: 14px 18px; 
+            border-radius: 14px; 
+            margin-bottom: 6px; 
+            cursor: pointer; 
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            color: var(--gray);
+            text-decoration: none;
+        }
+        .nav-item:hover, .nav-item.active { background: #f0fdf4; color: var(--primary); }
+
+        /* --- MAIN CONTENT --- */
+        main { flex: 1; margin-left: 280px; padding: 40px 5%; }
+
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .role-badge { 
+            background: var(--white); 
+            padding: 10px 20px; 
+            border-radius: 100px; 
+            border: 1px solid var(--border);
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- FINANCIAL CARDS --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-bottom: 40px; }
+        
+        .card { 
+            background: var(--white); 
+            padding: 32px; 
+            border-radius: 24px; 
+            border: 1px solid var(--border); 
+            box-shadow: var(--shadow);
+        }
+
+        .wallet-card { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border: none; }
+        .balance-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; }
+        .balance-amount { font-size: 2.5rem; font-weight: 800; margin: 10px 0 25px; }
+
+        .btn-row { display: flex; gap: 12px; }
+        .btn-action { 
+            flex: 1; padding: 14px; border-radius: 12px; border: none; 
+            font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: 0.2s; 
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: white; }
+        .btn-action:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        /* --- FORM SECTION --- */
+        .settings-container { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
+        
+        .form-group { margin-bottom: 24px; }
+        label { display: block; font-size: 0.8rem; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 10px; }
+        input, textarea, select { 
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border); 
+            background: var(--light-bg); outline: none; transition: 0.3s; font-size: 0.95rem;
+        }
+        input:focus { border-color: var(--primary); background: var(--white); box-shadow: 0 0 0 4px rgba(0, 214, 100, 0.05); }
+
+        .save-btn { 
+            background: var(--dark); color: white; padding: 16px 35px; 
+            border: none; border-radius: 14px; font-weight: 800; cursor: pointer; 
+        }
+
+        @media (max-width: 1024px) {
+            aside { display: none; }
+            main { margin-left: 0; padding: 25px; }
+            .settings-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <a href="index.html" class="logo-btn">
+            <div class="logo-icon">M</div>
+            <div class="logo-text">Ride<span>WithMeru</span></div>
+        </a>
+
+        <ul class="nav-menu">
+            <li class="nav-item active">📊 Account Overview</li>
+            <li class="nav-item">💰 Wallet & Payouts</li>
+            <li class="nav-item">👤 Profile Settings</li>
+            <li class="nav-item">🚗 My Services</li>
+            <li class="nav-item">📄 Transaction History</li>
+        </ul>
+
+        <a href="login.html" class="nav-item" style="color: #ff4757; margin-top: auto; font-weight: 800;">🚪 Log Out</a>
+    </aside>
+
+    <main>
+        <header>
+            <div>
+                <h1 style="font-size: 1.75rem; font-weight: 800; letter-spacing: -1px;">Partner Dashboard</h1>
+                <p style="color: var(--gray);">Welcome back, <strong>Silas Boda Express</strong></p>
+            </div>
+            <div class="role-badge">
+                <div style="width: 10px; height: 10px; background: var(--primary); border-radius: 50%;"></div>
+                Vetted Merchant
+            </div>
+        </header>
+
+        <div class="grid">
+            <div class="card wallet-card">
+                <p class="balance-label">Withdrawable Balance</p>
+                <h2 class="balance-amount">Ksh 12,450.00</h2>
+                <div class="btn-row">
+                    <a href="deposit.html" class="btn-action btn-primary" style="text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                        Deposit
+                    </a>
+                    
+                    <a href="withdraw.html" class="btn-action btn-secondary" style="text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                        Withdraw
+                    </a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 15px; font-size: 1rem;">M-Pesa Payout Info</h3>
+                <p style="font-size: 0.85rem; color: var(--gray); margin-bottom: 20px;">Earnings are sent to your verified number every Monday at 8:00 AM.</p>
+                <div style="background: var(--light-bg); padding: 15px; border-radius: 16px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border);">
+                    <span style="font-size: 1.2rem;">🟢</span>
+                    <div>
+                        <div style="font-weight: 800; font-size: 0.9rem;">+254 712 345 678</div>
+                        <div style="font-size: 0.7rem; color: var(--gray); font-weight: 700;">CONNECTED TO M-PESA</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="settings-container">
+            <div class="card">
+                <h3 style="margin-bottom: 25px;">Public Information</h3>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label>Business Name</label>
+                        <input type="text" value="Silas Boda Express">
+                    </div>
+                    <div class="form-group">
+                        <label>About your service</label>
+                        <textarea rows="4">Professional delivery and transport across Meru Town. Fast and always reliable.</textarea>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label>Base Location</label>
+                            <input type="text" value="Meru Town Mall">
+                        </div>
+                        <div class="form-group">
+                            <label>Service Area</label>
+                            <input type="text" value="Meru County">
+                        </div>
+                    </div>
+                    <button type="submit" class="save-btn">Save Changes</button>
+                </form>
+            </div>
+
+            <div class="card" style="height: fit-content;">
+                <h3 style="margin-bottom: 20px;">Security Hub</h3>
+                <div class="form-group">
+                    <label>Account Password</label>
+                    <input type="password" value="••••••••">
+                </div>
+                <button class="save-btn" style="background: var(--white); color: var(--dark); border: 1px solid var(--border); width: 100%;">Update Password</button>
+                
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+                    <p style="font-size: 0.75rem; color: var(--gray);">
+                        <strong>Note:</strong> Your Vehicle ID (KCP 442X) is locked. Contact support to change vehicle details.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function walletAction(type) {
+            const amount = prompt(`Enter amount to ${type}:`);
+            if (amount) {
+                alert(`M-Pesa request sent. Please enter your PIN to complete the ${type} of Ksh ${amount}.`);
+            }
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button');
+            btn.innerText = "Syncing...";
+            setTimeout(() => {
+                alert("Profile Updated! Your new info is now visible to customers in Meru.");
+                btn.innerText = "Save Changes";
+            }, 8000);
+        });
+    </script>
+</body>
+</html>

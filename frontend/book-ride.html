@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Ride | Ride with Meru</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d664; 
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--white); overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+
+        /* --- HEADER --- */
+        nav {
+            padding: 15px 5%;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+        .logo { font-size: 1.2rem; font-weight: 800; text-decoration: none; color: var(--dark); }
+        .logo span { color: var(--primary); }
+
+        /* --- MAIN LAYOUT --- */
+        .app-container { display: flex; flex: 1; height: calc(100vh - 70px); position: relative; }
+
+        /* --- SIDEBAR (Booking Form) --- */
+        .booking-sidebar {
+            width: 400px;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            z-index: 20;
+        }
+
+        h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 25px; letter-spacing: -0.5px; }
+
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--gray); text-transform: uppercase; margin-bottom: 8px; }
+        .input-group input { 
+            width: 100%; padding: 16px 16px 16px 45px; background: var(--light-bg); 
+            border: 1px solid var(--border); border-radius: 14px; font-size: 1rem; outline: none; 
+        }
+        .input-group .icon { position: absolute; left: 16px; top: 38px; font-size: 1.2rem; }
+
+        /* --- VEHICLE SELECTION --- */
+        .vehicle-option {
+            display: flex; align-items: center; gap: 15px; padding: 15px;
+            border: 2px solid var(--border); border-radius: 16px; cursor: pointer;
+            transition: 0.3s; margin-bottom: 12px;
+        }
+        .vehicle-option:hover { border-color: var(--primary); background: #f0fff4; }
+        .vehicle-option.active { border-color: var(--primary); background: #f0fff4; }
+        
+        .v-icon { font-size: 2rem; background: white; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px; }
+        .v-info { flex: 1; }
+        .v-info strong { display: block; font-size: 0.95rem; }
+        .v-info span { font-size: 0.8rem; color: var(--gray); }
+        .v-price { font-weight: 800; color: var(--dark); }
+
+        .btn-confirm {
+            margin-top: auto; padding: 20px; background: var(--dark); color: white;
+            border: none; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.3s;
+        }
+        .btn-confirm:hover { background: var(--primary); color: var(--dark); transform: translateY(-2px); }
+
+        /* --- MAP AREA --- */
+        .map-area { flex: 1; background: #f1f5f9; position: relative; overflow: hidden; }
+        
+        /* Simulated Map Dots & Route */
+        .map-bg { width: 100%; height: 100%; background-image: radial-gradient(#cbd5e1 1px, transparent 1.5px); background-size: 40px 40px; position: relative; }
+        .route-line { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 150px; opacity: 0.4; }
+        
+        .marker { position: absolute; background: white; padding: 10px; border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.1); z-index: 5; }
+        .marker.start { top: 60%; left: 40%; border: 3px solid var(--dark); }
+        .marker.end { top: 30%; left: 60%; border: 3px solid var(--primary); }
+
+        /* Mobile Adjustments */
+        @media (max-width: 850px) {
+            .booking-sidebar { width: 100%; position: absolute; bottom: 0; left: 0; height: 60%; border-radius: 30px 30px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.1); }
+            .map-area { height: 40%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">Ride<span>WithMeru</span></a>
+        <div style="font-size: 0.85rem; font-weight: 600; color: var(--gray);">Booking Portal</div>
+    </nav>
+
+    <div class="app-container">
+        <aside class="booking-sidebar">
+            <h2>Where to?</h2>
+            
+            <div class="input-group">
+                <label>Pickup Location</label>
+                <span class="icon">📍</span>
+                <input type="text" value="Meru Town Mall" placeholder="Search pickup...">
+            </div>
+
+            <div class="input-group">
+                <label>Destination</label>
+                <span class="icon">🏁</span>
+                <input type="text" placeholder="Enter destination in Meru...">
+            </div>
+
+            <div style="margin-top: 10px; margin-bottom: 20px;">
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--gray); text-transform: uppercase;">Select Service</label>
+                
+                <div class="vehicle-option active">
+                    <div class="v-icon">🏍️</div>
+                    <div class="v-info">
+                        <strong>Boda Express</strong>
+                        <span>Fastest for town trips</span>
+                    </div>
+                    <div class="v-price">Ksh 150</div>
+                </div>
+
+                <div class="vehicle-option">
+                    <div class="v-icon">🚕</div>
+                    <div class="v-info">
+                        <strong>Bolt Taxi</strong>
+                        <span>Premium saloon comfort</span>
+                    </div>
+                    <div class="v-price">Ksh 450</div>
+                </div>
+            </div>
+
+            <button class="btn-confirm" id="confirmRide">Request Ride</button>
+        </aside>
+
+        <section class="map-area">
+            <div class="map-bg">
+                <div class="marker start">📍</div>
+                <div class="marker end">🏁</div>
+                
+                <svg class="route-line" viewBox="0 0 100 50">
+                    <path d="M10,40 Q40,40 50,25 T90,10" fill="none" stroke="#00d664" stroke-width="2" stroke-dasharray="4,2" />
+                </svg>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Simple Interaction for Vehicle Selection
+        document.querySelectorAll('.vehicle-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.vehicle-option').forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
+
+        document.getElementById('confirmRide').addEventListener('click', function() {
+            this.innerText = "Searching for near drivers...";
+            this.style.background = "#2ed573";
+            
+            setTimeout(() => {
+                alert("Driver found! Boda Rider 'Silas' is 3 mins away. Get ready at Meru Town Mall.");
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust & Safety | Ride with Meru</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d664; 
+            --dark: #0f172a;
+            --gray: #64748b;
+            --white: #ffffff;
+            --light-bg: #f8fafc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--white); color: var(--dark); line-height: 1.6; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .logo { font-size: 1.3rem; font-weight: 800; text-decoration: none; color: var(--dark); }
+        .logo span { color: var(--primary); }
+
+        /* --- HERO SECTION --- */
+        .trust-hero {
+            padding: 100px 8%;
+            background: var(--dark);
+            color: white;
+            text-align: center;
+        }
+        .trust-hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; margin-bottom: 20px; letter-spacing: -2px; }
+        .trust-hero p { font-size: 1.2rem; color: #94a3b8; max-width: 700px; margin: 0 auto; }
+
+        /* --- CONTENT SECTIONS --- */
+        .section { padding: 80px 8%; }
+        .container-thin { max-width: 900px; margin: 0 auto; }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .trust-card {
+            background: var(--light-bg);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid #f1f5f9;
+        }
+        .trust-card h3 { margin: 20px 0 10px; font-weight: 800; }
+        .trust-card p { color: var(--gray); font-size: 0.95rem; }
+
+        /* --- VETTING WORKFLOW --- */
+        .workflow {
+            background: #f0fff4;
+            padding: 80px 8%;
+            border-radius: 50px;
+            margin: 0 4%;
+        }
+        .workflow-title { text-align: center; margin-bottom: 60px; }
+        
+        /* --- ACCORDION --- */
+        .faq-item {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 25px 0;
+            cursor: pointer;
+        }
+        .faq-question { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; }
+        .faq-answer { margin-top: 15px; color: var(--gray); display: none; }
+
+        footer { background: var(--dark); color: white; padding: 60px 8%; text-align: center; }
+
+        @media (max-width: 768px) {
+            .trust-hero { padding: 60px 20px; }
+            .section { padding: 60px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">Ride<span>WithMeru</span></a>
+        <a href="register-rider.html" class="logo" style="font-size: 0.9rem; color: var(--primary);">Partner Vetting</a>
+    </nav>
+
+    <header class="trust-hero">
+        <h1>Your safety is <br>our core mission.</h1>
+        <p>At Ride with Meru, we aren't just an app. We are an intermediary dedicated to ensuring every trip and every delivery in Meru County meets the highest standards of integrity.</p>
+    </header>
+
+    <section class="section">
+        <div class="container-thin">
+            <h2 style="font-size: 2.2rem; text-align: center; margin-bottom: 20px;">The 3 Pillars of Trust</h2>
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <span style="font-size: 2.5rem;">🆔</span>
+                    <h3>Identity Verification</h3>
+                    <p>We don't just accept sign-ups. Every partner must present a National ID and a valid KRA PIN in person at our Meru offices before activation.</p>
+                </div>
+                <div class="trust-card">
+                    <span style="font-size: 2.5rem;">🕵️</span>
+                    <h3>Background Checks</h3>
+                    <p>We work with local authorities to ensure our riders have a clean track record. Good conduct is mandatory for the Ride with Meru badge.</p>
+                </div>
+                <div class="trust-card">
+                    <span style="font-size: 2.5rem;">💰</span>
+                    <h3>Payment Security</h3>
+                    <p>Our M-Pesa integrated gateway ensures that your money is held securely and only released to partners upon successful service delivery.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+    <section class="workflow">
+        <div class="container-thin">
+            <div class="workflow-title">
+                <span style="color: #008a44; font-weight: 800; font-size: 0.8rem; letter-spacing: 2px;">OUR PROCESS</span>
+                <h2 style="font-size: 2rem; margin-top: 10px;">How we vet our partners</h2>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 30px;">
+                <div style="display: flex; gap: 20px; align-items: flex-start;">
+                    <div style="background: var(--primary); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0;">1</div>
+                    <div>
+                        <h4 style="font-size: 1.1rem; margin-bottom: 5px;">Digital Application</h4>
+                        <p style="color: var(--gray);">Partners upload basic documents via the portal for initial screening.</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 20px; align-items: flex-start;">
+                    <div style="background: var(--primary); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0;">2</div>
+                    <div>
+                        <h4 style="font-size: 1.1rem; margin-bottom: 5px;">Physical Inspection</h4>
+                        <p style="color: var(--gray);">Vehicles are inspected for roadworthiness and cleanliness at our Meru HQ.</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 20px; align-items: flex-start;">
+                    <div style="background: var(--primary); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0;">3</div>
+                    <div>
+                        <h4 style="font-size: 1.1rem; margin-bottom: 5px;">Intermediary Training</h4>
+                        <p style="color: var(--gray);">Riders are trained on customer service, Meru County routes, and safety protocols.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container-thin">
+            <h2 style="margin-bottom: 40px;">Frequently Asked Questions</h2>
+            
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span>How do I report an issue?</span> <span>+</span></div>
+                <div class="faq-answer">You can report any issues directly through the app or by visiting our office in Meru Town. Our support team is available 24/7.</div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span>Is my payment info safe?</span> <span>+</span></div>
+                <div class="faq-answer">Yes. We use industry-standard encryption and direct M-Pesa STK Push technology. We never store your PIN.</div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-question"><span>How are delivery prices calculated?</span> <span>+</span></div>
+                <div class="faq-answer">Prices are based on a transparent per-kilometer rate set by the intermediary to ensure fairness for both the customer and the rider.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Ride with Meru Safety Council. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleFaq(element) {
+            const answer = element.querySelector('.faq-answer');
+            const symbol = element.querySelector('span:last-child');
+            if (answer.style.display === "block") {
+                answer.style.display = "none";
+                symbol.innerText = "+";
+            } else {
+                answer.style.display = "block";
+                symbol.innerText = "-";
+            }
+        }
+    </script>
+
+</body>
+</html>

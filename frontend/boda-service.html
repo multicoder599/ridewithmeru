@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boda Express | Ride with Meru</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d664; 
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--white); color: var(--dark); line-height: 1.6; }
+
+        /* --- SUB-NAV --- */
+        nav {
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .logo { font-size: 1.3rem; font-weight: 800; text-decoration: none; color: var(--dark); }
+        .logo span { color: var(--primary); }
+
+        /* --- HERO SECTION --- */
+        .service-hero {
+            display: flex;
+            align-items: center;
+            padding: 60px 8%;
+            gap: 50px;
+            background: linear-gradient(to right, #ffffff, #f0fff4);
+        }
+
+        .hero-content { flex: 1; }
+        .hero-content h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+        .hero-content p { font-size: 1.2rem; color: var(--gray); margin-bottom: 30px; }
+
+        .hero-image {
+            flex: 1;
+            height: 400px;
+            background: url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80&w=800') center/cover;
+            border-radius: 40px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+        }
+
+        /* --- BOOKING CARD (Side or Bottom) --- */
+        .booking-ui {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            max-width: 500px;
+            margin: -100px auto 60px;
+            position: relative;
+            z-index: 10;
+            border: 1px solid #f1f5f9;
+        }
+
+        .input-box {
+            background: var(--light-bg);
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .input-box input { border: none; background: transparent; width: 100%; outline: none; font-size: 1rem; }
+
+        .btn-book {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-book:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,214,100,0.3); }
+
+        /* --- TRUST SECTION --- */
+        .safety-grid {
+            padding: 80px 8%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+        .safety-item h3 { margin: 15px 0 10px; font-weight: 700; }
+        .safety-item p { color: var(--gray); font-size: 0.9rem; }
+
+        footer { background: var(--dark); color: white; padding: 40px 8%; text-align: center; }
+
+        @media (max-width: 900px) {
+            .service-hero { flex-direction: column; text-align: center; padding: 40px 20px 120px; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .hero-image { width: 100%; height: 250px; }
+            .booking-ui { margin: -60px 20px 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">Ride<span>WithMeru</span></a>
+        <a href="book-ride.html" style="text-decoration: none; color: var(--dark); font-weight: 700;">Back to Map</a>
+    </nav>
+
+    <header class="service-hero">
+        <div class="hero-content">
+            <span style="background: #e8fff3; color: #008a44; padding: 6px 15px; border-radius: 100px; font-size: 0.8rem; font-weight: 800; margin-bottom: 20px; display: inline-block;">FAST & RELIABLE</span>
+            <h1>The fastest way to <br>cross Meru Town.</h1>
+            <p>Beat the traffic with our vetted Boda Express riders. Safe, quick, and affordable.</p>
+        </div>
+        <div class="hero-image"></div>
+    </header>
+
+    <section class="booking-ui">
+        <h2 style="margin-bottom: 25px; text-align: center;">Book Your Boda</h2>
+        <div class="input-box">
+            <span>📍</span>
+            <input type="text" placeholder="Current Location (e.g. Meru Mall)">
+        </div>
+        <div class="input-box">
+            <span>🏁</span>
+            <input type="text" placeholder="Destination (e.g. Makutano)">
+        </div>
+        <div style="display: flex; justify-content: space-between; margin: 20px 0; font-weight: 700;">
+            <span>Estimated Fare:</span>
+            <span style="color: var(--primary);">Ksh 100 - 150</span>
+        </div>
+        <button class="btn-book" onclick="location.href='book-ride.html'">Request Now</button>
+    </section>
+
+    <div class="safety-grid">
+        <div class="safety-item">
+            <span style="font-size: 2.5rem;">🛡️</span>
+            <h3>Hand-Vetted Riders</h3>
+            <p>Every Boda rider in our fleet is physically interviewed and background checked.</p>
+        </div>
+        <div class="safety-item">
+            <span style="font-size: 2.5rem;">🪖</span>
+            <h3>Safety Gear</h3>
+            <p>All riders are required to carry a clean, spare helmet and reflector for every passenger.</p>
+        </div>
+        <div class="safety-item">
+            <span style="font-size: 2.5rem;">📍</span>
+            <h3>Live Tracking</h3>
+            <p>Share your ride progress with friends or family in real-time through the app.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Ride with Meru. Keeping the County Moving.</p>
+    </footer>
+
+</body>
+</html>

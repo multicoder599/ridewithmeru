@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Ride with Meru | Create Account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d664; 
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --error: #ff4757;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background-color: var(--light-bg);
+            background-image: radial-gradient(circle at 0% 0%, rgba(0, 214, 100, 0.05) 0%, transparent 50%),
+                              radial-gradient(circle at 100% 100%, rgba(15, 23, 42, 0.05) 0%, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* --- REGISTRATION CARD --- */
+        .register-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            text-decoration: none; 
+            color: var(--dark); 
+            display: block;
+            margin-bottom: 30px;
+        }
+        .logo span { color: var(--primary); }
+
+        h2 { font-size: 1.75rem; font-weight: 800; margin-bottom: 10px; letter-spacing: -1px; }
+        p.subtitle { color: var(--gray); font-size: 0.95rem; margin-bottom: 30px; }
+
+        /* --- FORM ELEMENTS --- */
+        .form-group { text-align: left; margin-bottom: 20px; }
+        
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark);
+            margin-left: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 20px;
+            background: var(--white);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 214, 100, 0.1);
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 16px;
+            background: var(--dark);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-register:hover {
+            background: var(--primary);
+            color: var(--dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 214, 100, 0.2);
+        }
+
+        /* --- FOOTER LINKS --- */
+        .footer-links { margin-top: 25px; font-size: 0.9rem; color: var(--gray); }
+        .footer-links a { color: var(--primary); text-decoration: none; font-weight: 700; }
+        
+        .social-login {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .register-card { padding: 30px 20px; border-radius: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-card">
+        <a href="index.html" class="logo">Ride<span>WithMeru</span></a>
+        
+        <h2>Create Account</h2>
+        <p class="subtitle">Join thousands of residents moving smarter in Meru County.</p>
+
+        <form id="registrationForm">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="fullname" placeholder="Enter your official name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number (M-Pesa)</label>
+                <input type="tel" id="phone" placeholder="07xx xxx xxx" required>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="name@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Min. 8 characters" required>
+            </div>
+
+            <button type="submit" class="btn-register">Get Started</button>
+        </form>
+
+        <div class="footer-links">
+            Already have an account? <a href="login.html">Sign In</a>
+        </div>
+
+        <div class="social-login">
+            <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">Or continue with</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <div style="width: 40px; height: 40px; border-radius: 10px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; cursor: pointer;">G</div>
+                <div style="width: 40px; height: 40px; border-radius: 10px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; cursor: pointer;">F</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration: Point to your live Meru Hub
+        const API_URL = "https://ridewithmeru.onrender.com";
+    
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+    
+            // 1. Collect data from your form fields
+            const name = document.getElementById('fullname').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const role = "Customer"; // Defaulting to Customer for now
+    
+            // 2. Visual Feedback: Loading state
+            const submitBtn = e.target.querySelector('button');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = "Creating Account...";
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = "0.7";
+    
+            try {
+                // 3. Send the POST request to your live Render server
+                const response = await fetch(`${API_URL}/api/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include', // Ensures cross-site security is handled
+                    body: JSON.stringify({ name, email, phone, password, role })
+                });
+    
+                const data = await response.json();
+    
+                if (data.success) {
+                    // 4. Success: Move to login
+                    alert("Karibu! Account created successfully. Please login.");
+                    window.location.href = "login.html";
+                } else {
+                    // 5. Handle errors (e.g., email already exists)
+                    alert("Registration Failed: " + (data.message || "Unknown error"));
+                    resetButton(submitBtn, originalText);
+                }
+    
+            } catch (error) {
+                console.error("Connection Error:", error);
+                alert("Could not connect to the Meru server. Please check your internet.");
+                resetButton(submitBtn, originalText);
+            }
+        });
+    
+        // Helper to reset button state on failure
+        function resetButton(btn, text) {
+            btn.innerText = text;
+            btn.disabled = false;
+            btn.style.opacity = "1";
+        }
+    </script>
+
+</body>
+</html>

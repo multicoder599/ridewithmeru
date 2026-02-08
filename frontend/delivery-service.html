@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retail Delivery | Ride with Meru Logistics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d664; 
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--white); color: var(--dark); line-height: 1.6; }
+
+        /* --- SUB-NAV --- */
+        nav {
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo { font-size: 1.3rem; font-weight: 800; text-decoration: none; color: var(--dark); }
+        .logo span { color: var(--primary); }
+
+        /* --- HERO SECTION --- */
+        .service-hero {
+            display: flex;
+            align-items: center;
+            padding: 80px 8%;
+            gap: 50px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%);
+        }
+
+        .hero-content { flex: 1; }
+        .hero-content h1 { font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+        .hero-content p { font-size: 1.2rem; color: var(--gray); margin-bottom: 30px; }
+
+        .hero-image {
+            flex: 1;
+            height: 450px;
+            background: url('https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&q=80&w=800') center/cover;
+            border-radius: 40px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.1);
+        }
+
+        /* --- DELIVERY UI --- */
+        .delivery-ui {
+            background: var(--white);
+            padding: 45px;
+            border-radius: 35px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.06);
+            max-width: 550px;
+            margin: -120px auto 80px;
+            position: relative;
+            z-index: 10;
+            border: 1px solid #f1f5f9;
+        }
+
+        .category-scroll {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+        }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        
+        .cat-item {
+            padding: 10px 20px;
+            background: var(--light-bg);
+            border-radius: 100px;
+            white-space: nowrap;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+        }
+        .cat-item.active { background: var(--primary); border-color: var(--primary); color: var(--dark); }
+
+        .input-box {
+            background: var(--light-bg);
+            padding: 16px 20px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .input-box input { border: none; background: transparent; width: 100%; outline: none; font-size: 1rem; }
+
+        .btn-order {
+            width: 100%;
+            padding: 20px;
+            background: var(--dark);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-order:hover { background: var(--primary); color: var(--dark); transform: translateY(-3px); }
+
+        /* --- STEP SECTION --- */
+        .steps { padding: 40px 8% 100px; text-align: center; }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        .step-card { padding: 20px; }
+        .step-num { 
+            width: 40px; height: 40px; background: var(--primary); color: var(--dark); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            margin: 0 auto 20px; font-weight: 800;
+        }
+
+        footer { background: var(--dark); color: white; padding: 60px 8%; text-align: center; }
+
+        @media (max-width: 900px) {
+            .service-hero { flex-direction: column; text-align: center; padding: 60px 20px 140px; }
+            .hero-image { width: 100%; height: 280px; }
+            .delivery-ui { margin: -80px 20px 60px; padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">Ride<span>WithMeru</span></a>
+        <a href="register-retailer.html" style="text-decoration: none; color: var(--primary); font-weight: 700; font-size: 0.9rem;">Register your Shop</a>
+    </nav>
+
+    <header class="service-hero">
+        <div class="hero-content">
+            <span style="background: #dcfce7; color: #166534; padding: 6px 16px; border-radius: 100px; font-size: 0.75rem; font-weight: 800; margin-bottom: 20px; display: inline-block;">FAST LOGISTICS</span>
+            <h1>Meru's Marketplace, <br>delivered to you.</h1>
+            <p>From groceries to electronics—order from any verified retailer in Meru and get it in minutes.</p>
+        </div>
+        <div class="hero-image"></div>
+    </header>
+
+    <section class="delivery-ui">
+        <h2 style="margin-bottom: 20px; text-align: center; letter-spacing: -1px;">What do you need?</h2>
+        
+        <div class="category-scroll">
+            <div class="cat-item active">Groceries</div>
+            <div class="cat-item">Pharmacy</div>
+            <div class="cat-item">Hardware</div>
+            <div class="cat-item">Electronics</div>
+            <div class="cat-item">Food</div>
+        </div>
+
+        <div class="input-box">
+            <span>🏪</span>
+            <input type="text" placeholder="Shop Name (e.g. Meru Greens)">
+        </div>
+
+        <div class="input-box">
+            <span>📍</span>
+            <input type="text" placeholder="Your Delivery Address">
+        </div>
+
+        <div style="padding: 15px; background: #f8fafc; border-radius: 15px; margin-bottom: 20px; font-size: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span>Delivery Fee:</span>
+                <span style="font-weight: 800;">Ksh 50 - 150</span>
+            </div>
+            <p style="color: var(--gray);">Depending on distance within Meru County.</p>
+        </div>
+
+        <button class="btn-order" onclick="location.href='book-ride.html'">Start Order</button>
+    </section>
+
+    <div class="steps">
+        <h2 style="margin-bottom: 60px;">How it works</h2>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-num">1</div>
+                <h3>Pick a Store</h3>
+                <p style="color: var(--gray);">Select from our list of vetted local retailers in Meru.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">2</div>
+                <h3>Enter Items</h3>
+                <p style="color: var(--gray);">List what you need or upload your shopping list.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">3</div>
+                <h3>Live Tracking</h3>
+                <p style="color: var(--gray);">Watch our delivery partner pick and drop your items in real-time.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Ride with Meru Logistics. Connecting Shops to Homes.</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.cat-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    </script>
+
+</body>
+</html>

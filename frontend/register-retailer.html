@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Your Shop | Ride with Meru</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d664; 
+            --dark: #0f172a;
+            --gray: #64748b;
+            --white: #ffffff;
+            --light-bg: #f8fafc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--light-bg); color: var(--dark); line-height: 1.6; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            padding: 20px 5%;
+            background: var(--white);
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 1.3rem; font-weight: 800; text-decoration: none; color: var(--dark); }
+        .logo span { color: var(--primary); }
+
+        /* --- LAYOUT --- */
+        .onboarding-container {
+            max-width: 1000px;
+            margin: 60px auto;
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 50px;
+            padding: 0 20px;
+        }
+
+        /* --- LEFT SIDE: BUSINESS PITCH --- */
+        .pitch-panel h1 { font-size: 2.8rem; font-weight: 800; line-height: 1.1; margin-bottom: 25px; letter-spacing: -1.5px; }
+        .pitch-panel p { font-size: 1.1rem; color: var(--gray); margin-bottom: 40px; }
+
+        .stat-card {
+            background: #e8fff3;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(0,214,100,0.2);
+        }
+        .stat-card strong { font-size: 1.2rem; color: #008a44; display: block; }
+        .stat-card span { font-size: 0.85rem; color: #166534; }
+
+        /* --- RIGHT SIDE: RETAILER FORM --- */
+        .retail-form {
+            background: var(--white);
+            padding: 45px;
+            border-radius: 35px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .form-header { margin-bottom: 30px; text-align: left; }
+        .form-header h2 { font-size: 1.5rem; font-weight: 800; }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; color: var(--dark); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        input, select, textarea {
+            width: 100%; padding: 16px; border: 1.5px solid #e2e8f0; border-radius: 16px;
+            font-size: 1rem; outline: none; transition: 0.3s; background: #fbfcfd;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); background: white; }
+
+        .btn-register {
+            width: 100%; padding: 20px; background: var(--dark); color: white;
+            border: none; border-radius: 18px; font-weight: 800; font-size: 1.1rem;
+            cursor: pointer; transition: 0.3s; margin-top: 20px;
+        }
+        .btn-register:hover { background: var(--primary); color: var(--dark); transform: translateY(-2px); }
+
+        /* --- MOBILE --- */
+        @media (max-width: 900px) {
+            .onboarding-container { grid-template-columns: 1fr; margin: 20px auto; }
+            .pitch-panel { text-align: center; }
+            .retail-form { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">Ride<span>WithMeru</span></a>
+        <a href="login.html" style="text-decoration: none; font-weight: 700; color: var(--dark);">Merchant Login</a>
+    </nav>
+
+    <div class="onboarding-container">
+        <div class="pitch-panel">
+            <h1>Grow your shop <br>beyond your street.</h1>
+            <p>Join the Meru Hub network and start delivering your products to residents across the county. We handle the riders; you handle the sales.</p>
+            
+            <div class="stat-card">
+                <div style="font-size: 2rem;">🚀</div>
+                <div>
+                    <strong>Increased Reach</strong>
+                    <span>Deliver to customers in Meru, Nkubu, and beyond.</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div style="font-size: 2rem;">🤝</div>
+                <div>
+                    <strong>Trusted Logistics</strong>
+                    <span>All delivery riders are vetted and tracked by us.</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div style="font-size: 2rem;">📊</div>
+                <div>
+                    <strong>Weekly Reports</strong>
+                    <span>Detailed sales and delivery insights for your business.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="retail-form">
+            <div class="form-header">
+                <h2>Merchant Application</h2>
+                <p style="color: var(--gray); font-size: 0.9rem;">Submit your shop details for verification.</p>
+            </div>
+
+            <form id="merchantForm">
+                <div class="input-group">
+                    <label>Business Name</label>
+                    <input type="text" placeholder="e.g. Meru Central Electronics" required>
+                </div>
+
+                <div class="input-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="input-group">
+                        <label>Contact Person</label>
+                        <input type="text" placeholder="Manager Name" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Business Phone</label>
+                        <input type="tel" placeholder="07xx xxx xxx" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Shop Category</label>
+                    <select required>
+                        <option value="">Select Category</option>
+                        <option>Supermarket / Grocery</option>
+                        <option>Pharmacy / Health</option>
+                        <option>Hardware / Construction</option>
+                        <option>Restaurant / Fast Food</option>
+                        <option>Electronics & Tech</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Physical Location</label>
+                    <textarea rows="2" placeholder="e.g. Ground Floor, Meru Plaza, Tom Mboya St." required></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>Business Permit (Photo/PDF)</label>
+                    <input type="file" style="padding: 10px; font-size: 0.8rem;">
+                    <small style="color: var(--gray); font-size: 0.7rem;">Help us verify your business legitimacy.</small>
+                </div>
+
+                <button type="submit" class="btn-register">Apply to Join</button>
+                <p style="font-size: 0.75rem; text-align: center; margin-top: 15px; color: var(--gray);">
+                    Our business relations team will visit your shop for a final check within 48 hours.
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('merchantForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button');
+            btn.innerText = "Processing Application...";
+            btn.style.opacity = "0.7";
+            
+            setTimeout(() => {
+                alert("Thank you! Your merchant application has been received. Our Meru team will visit your location shortly for onboarding.");
+                window.location.href = "index.html";
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
