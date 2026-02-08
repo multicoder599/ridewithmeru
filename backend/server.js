@@ -7,7 +7,6 @@ const MongoStore = require('connect-mongo');
 const bcrypt = require('bcryptjs');
 const helmet = require('helmet');
 const cors = require('cors');
-const fs = require('fs');
 
 // 1. Model Imports
 const User = require('./models/user');
@@ -18,12 +17,12 @@ const PORT = process.env.PORT || 5000;
 const DB_URI = process.env.DATABASE_URL || "mongodb+srv://newtonmulti_db_user:RPKsmQdCgvlaWCOz@cluster0.khvzewx.mongodb.net/ridewithmeru?retryWrites=true&w=majority";
 
 // --- SECURITY & CORS ---
-app.use(helmet({ contentSecurityPolicy: false }));
-app.set('trust proxy', 1);
+app.use(helmet({ contentSecurityPolicy: false })); // Keeps CSP relaxed for internal scripts
+app.set('trust proxy', 1); // Crucial for Render's load balancer to handle cookies correctly
 
-// Configure CORS to allow your live Render URL
 app.use(cors({ 
-    origin: "https://ridewithmeru.onrender.com", 
+    // If you stay on Render, keep this. If moving to Netlify, add that URL here.
+    origin: ["https://ridewithmeru.onrender.com", "http://localhost:3000"], 
     credentials: true 
 }));
 
@@ -36,23 +35,9 @@ mongoose.connect(DB_URI)
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// --- FIXED PATHING: Sibling Folder Logic ---
-// We go up one level from 'backend' to find 'frontend'
+// --- PATHING LOGIC ---
+// Points to the frontend folder located next to the backend folder
 const frontendPath = path.join(__dirname, '..', 'frontend');
-
-// DIAGNOSTIC: Check if folder exists on the Render server
-if (fs.existsSync(frontendPath)) {
-    console.log("📂 Frontend folder found at:", frontendPath);
-} else {
-    console.log("⚠️ Frontend folder NOT found at:", frontendPath);
-    // This logs what the server actually sees to help us troubleshoot
-    try {
-        console.log("Current parent directory contents:", fs.readdirSync(path.join(__dirname, '..')));
-    } catch (e) {
-        console.log("Could not read parent directory.");
-    }
-}
-
 app.use(express.static(frontendPath));
 
 // --- SESSION CONFIG ---
@@ -60,35 +45,72 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'meru_secret_2026',
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: DB_URI, collectionName: 'sessions' }),
+    store: MongoStore.create({ 
+        mongoUrl: DB_URI, 
+        collectionName: 'sessions' 
+    }),
     cookie: {
-        secure: true, // Required for HTTPS on Render
-        httpOnly: true,
-        sameSite: 'none', // Allows cookies to work across your Render link
+        secure: true,    // Required for HTTPS on Render
+        httpOnly: true,  // Protects against XSS
+        sameSite: 'none', // Allows cross-site cookie tracking for sessions
         maxAge: 1000 * 60 * 60 * 24 
     }
 }));
 
 // --- ROUTES ---
 
-// Homepage
-app.get('/', (req, res) => {
-    const indexPath = path.join(frontendPath, 'index.html');
-    if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-    } else {
-        res.status(404).send("index.html not found in frontend folder.");
+// Registration API
+app.post('/api/register', async (req, res) => {
+    try {
+        const { name, email, password, phone, role } = req.body;
+        const exists = await User.findOne({ email: email.toLowerCase() });
+        if (exists) return res.status(400).json({ success: false, message: "Email already in use." });
+
+        const hashedPassword = await bcrypt.hash(password, 12);
+        const newUser = new User({ 
+            name, 
+            email: email.toLowerCase(), 
+            password: hashedPassword, 
+            phone, 
+            role: role || 'Customer' 
+        });
+        await newUser.save();
+        res.status(201).json({ success: true, message: "Account created successfully!" });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Server error during registration." });
     }
 });
 
-// SPA Catch-all: For any other route, try serving index.html
-app.get('*', (req, res) => {
-    const filePath = path.join(frontendPath, 'index.html');
-    if (fs.existsSync(filePath)) {
-        res.sendFile(filePath);
-    } else {
-        res.status(404).send("Front-end files missing from server.");
+// Login API
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email: email.toLowerCase() });
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ success: false, message: "Invalid credentials." });
+        }
+        // Save user to session
+        req.session.user = { id: user._id, name: user.name, role: user.role };
+        req.session.save(() => res.json({ success: true }));
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Server error during login." });
     }
+});
+
+// User Data (for Dashboard)
+app.get('/api/user-data', async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ success: false });
+    try {
+        const user = await User.findById(req.session.user.id).select('-password');
+        res.json({ success: true, user });
+    } catch (err) {
+        res.status(500).json({ success: false });
+    }
+});
+
+// SPA Catch-all (Serves index.html for any frontend route)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 app.listen(PORT, () => console.log(`🚀 RideWithMeru Hub Live on Port ${PORT}`));
