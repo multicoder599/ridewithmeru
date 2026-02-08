@@ -1,116 +1,125 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const session = require('express-session');
-const bcrypt = require('bcryptjs');
-const User = require('./models/User'); // Ensure this path matches your file structure
 require('dotenv').config();
+const express = require('express');
+const path = require('path');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const bcrypt = require('bcryptjs');
+const helmet = require('helmet');
+const cors = require('cors');
+
+// 1. Model Imports
+const User = require('./models/user');
+const Transaction = require('./models/transaction');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const DB_URI = process.env.DATABASE_URL || "mongodb+srv://newtonmulti_db_user:RPKsmQdCgvlaWCOz@cluster0.khvzewx.mongodb.net/ridewithmeru?retryWrites=true&w=majority";
 
-// --- CRITICAL FIX FOR MOBILE LOGIN ---
-app.set('trust proxy', 1); // Trust Render's Load Balancer
+// --- SECURITY & CORS ---
+app.use(helmet({ contentSecurityPolicy: false }));
+app.set('trust proxy', 1); // Crucial for Render's load balancer
 
-// Middleware
-app.use(express.json());
-
-// Update CORS to allow cookies from any origin (simplified for mobile)
-app.use(cors({
-    origin: function (origin, callback) {
-        callback(null, true); // Allow any frontend to connect
-    },
-    credentials: true // Allow cookies to travel
+app.use(cors({ 
+    // ADD YOUR NETLIFY URL HERE
+    origin: ["https://ridewithmeru.netlify.app", "https://ridewithmeru.onrender.com", "http://localhost:3000"], 
+    credentials: true // Crucial for sessions/cookies
 }));
 
-// Session Configuration (Mobile Compatible)
+// --- DB CONNECTION ---
+mongoose.connect(DB_URI)
+    .then(() => console.log("✅ Meru Database Connected"))
+    .catch(err => console.error("❌ DB Error:", err));
+
+// --- MIDDLEWARE ---
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// --- PATHING LOGIC ---
+// This remains for local testing or if you use Render to serve some assets
+const frontendPath = path.join(__dirname, '..', 'frontend');
+app.use(express.static(frontendPath));
+
+// --- SESSION CONFIG ---
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'merusecretkey',
+    secret: process.env.SESSION_SECRET || 'meru_secret_2026',
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({ 
+        mongoUrl: DB_URI, 
+        collectionName: 'sessions' 
+    }),
     cookie: {
-        secure: true,      // REQUIRED: Must be true for Render/HTTPS
-        sameSite: 'none',  // REQUIRED: Allows cookie to cross from Frontend to Backend
-        maxAge: 1000 * 60 * 60 * 24 * 7 // 7 Days
+        secure: true,      // Required for HTTPS
+        httpOnly: true,    // Protects against XSS
+        sameSite: 'none',  // Required for cross-domain sessions
+        maxAge: 1000 * 60 * 60 * 24 
     }
 }));
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("✅ MongoDB Connected"))
-    .catch(err => console.error("❌ MongoDB Error:", err));
+// --- ROUTES ---
 
-// Routes
-
-// 1. REGISTER
+// Registration API
 app.post('/api/register', async (req, res) => {
     try {
-        const { name, email, phone, password, role } = req.body;
-        
-        // Check if user exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) return res.status(400).json({ success: false, message: "Email already exists" });
+        const { name, email, password, phone, role } = req.body;
+        const exists = await User.findOne({ email: email.toLowerCase() });
+        if (exists) return res.status(400).json({ success: false, message: "Email already in use." });
 
-        // Hash Password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const newUser = new User({
-            name, email, phone, role, password: hashedPassword
+        const hashedPassword = await bcrypt.hash(password, 12);
+        const newUser = new User({ 
+            name, 
+            email: email.toLowerCase(), 
+            password: hashedPassword, 
+            phone, 
+            role: role || 'Customer' 
         });
-
         await newUser.save();
-        res.json({ success: true, message: "Account created successfully" });
+        res.status(201).json({ success: true, message: "Account created successfully!" });
     } catch (err) {
-        res.status(500).json({ success: false, message: "Server Error" });
+        res.status(500).json({ success: false, message: "Server error during registration." });
     }
 });
 
-// 2. LOGIN
+// Login API
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-
-        const user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ success: false, message: "User not found" });
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ success: false, message: "Invalid credentials" });
-
-        // Save session
-        req.session.userId = user._id;
-        
-        // Manually save session to ensure cookie is set before response
-        req.session.save(err => {
-            if(err) return res.status(500).json({ success: false, message: "Session Error" });
-            res.json({ success: true, message: "Logged in successfully" });
-        });
-
+        const user = await User.findOne({ email: email.toLowerCase() });
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ success: false, message: "Invalid credentials." });
+        }
+        // Save user to session
+        req.session.user = { id: user._id, name: user.name, role: user.role };
+        req.session.save(() => res.json({ success: true }));
     } catch (err) {
-        res.status(500).json({ success: false, message: "Server Error" });
+        res.status(500).json({ success: false, message: "Server error during login." });
     }
 });
 
-// 3. GET USER DATA (Session Check)
+// User Data (for Dashboard)
 app.get('/api/user-data', async (req, res) => {
-    if (!req.session.userId) {
-        return res.status(401).json({ success: false, message: "Not Authenticated" });
-    }
-
+    if (!req.session.user) return res.status(401).json({ success: false });
     try {
-        const user = await User.findById(req.session.userId).select('-password');
+        const user = await User.findById(req.session.user.id).select('-password');
         res.json({ success: true, user });
     } catch (err) {
-        res.status(500).json({ success: false, message: "Server Error" });
+        res.status(500).json({ success: false });
     }
 });
 
-// 4. LOGOUT
+// Logout API
 app.post('/api/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) return res.status(500).json({ success: false, message: "Could not log out" });
-        res.clearCookie('connect.sid');
-        res.json({ success: true, message: "Logged out" });
+    req.session.destroy(err => {
+        if (err) return res.status(500).json({ success: false });
+        res.clearCookie('connect.sid', { sameSite: 'none', secure: true });
+        res.json({ success: true });
     });
 });
 
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+// Fallback
+app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+});
+
+app.listen(PORT, () => console.log(`🚀 RideWithMeru Hub Live on Port ${PORT}`));
