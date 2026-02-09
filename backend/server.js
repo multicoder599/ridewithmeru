@@ -18,19 +18,18 @@ const DB_URI = process.env.DATABASE_URL || "mongodb+srv://newtonmulti_db_user:RP
 
 // --- SECURITY & CORS ---
 app.use(helmet({ contentSecurityPolicy: false }));
-app.set('trust proxy', 1); // Crucial for Render's load balancer
+app.set('trust proxy', 1); // Crucial for Render's load balancer to handle 'secure' cookies
 
 app.use(cors({ 
-    // UPDATED: Added Rider and Retailer Netlify URLs to allowed origins
     origin: [
         "https://ridewithmeru.netlify.app", 
         "https://ridewithmeru-riders.netlify.app", 
         "https://ridewithmeru-partners.netlify.app",
         "https://ridewithmeru.onrender.com", 
         "http://localhost:3000",
-        "http://127.0.0.1:5500" // Added for local live-server testing
+        "http://127.0.0.1:5500" 
     ], 
-    credentials: true // Crucial for sessions/cookies to work on iPhone
+    credentials: true 
 }));
 
 // --- DB CONNECTION ---
@@ -46,7 +45,7 @@ app.use(express.json());
 const frontendPath = path.join(__dirname, '..', 'frontend');
 app.use(express.static(frontendPath));
 
-// --- SESSION CONFIG ---
+// --- SESSION CONFIG (UPDATED FOR iPHONE PERSISTENCE) ---
 app.use(session({
     secret: process.env.SESSION_SECRET || 'meru_secret_2026',
     resave: false,
@@ -56,9 +55,10 @@ app.use(session({
         collectionName: 'sessions' 
     }),
     cookie: {
-        secure: true,      // Required for HTTPS (Render)
-        httpOnly: true,    // Protects against XSS
-        sameSite: 'none',  // Required for cross-domain sessions (Safari/iPhone requirement)
+        secure: true,      // Must be true for sameSite: 'none'
+        httpOnly: true,    
+        sameSite: 'none',  // Cross-domain cookie support
+        partitioned: true, // CRITICAL: Fixes third-party cookie blocking on iOS 17+ and Chrome
         maxAge: 1000 * 60 * 60 * 24 
     }
 }));
@@ -95,9 +95,15 @@ app.post('/api/login', async (req, res) => {
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ success: false, message: "Invalid credentials." });
         }
+        
         // Save user to session
         req.session.user = { id: user._id, name: user.name, role: user.role };
-        req.session.save(() => res.json({ success: true }));
+        
+        // Explicitly save session before sending response to ensure cookie is set
+        req.session.save((err) => {
+            if (err) return res.status(500).json({ success: false });
+            res.json({ success: true });
+        });
     } catch (err) {
         res.status(500).json({ success: false, message: "Server error during login." });
     }
@@ -114,7 +120,7 @@ app.get('/api/user-data', async (req, res) => {
     }
 });
 
-// --- NEW: DIRECT PASSWORD RESET API (NO OTP) ---
+// DIRECT PASSWORD RESET API
 app.patch('/api/auth/direct-reset', async (req, res) => {
     try {
         const { phone, newPassword } = req.body;
@@ -144,7 +150,8 @@ app.post('/api/logout', (req, res) => {
         res.clearCookie('connect.sid', { 
             sameSite: 'none', 
             secure: true, 
-            httpOnly: true 
+            httpOnly: true,
+            partitioned: true 
         });
         res.json({ success: true });
     });
