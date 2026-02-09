@@ -21,9 +21,16 @@ app.use(helmet({ contentSecurityPolicy: false }));
 app.set('trust proxy', 1); // Crucial for Render's load balancer
 
 app.use(cors({ 
-    // ADD YOUR NETLIFY URL HERE
-    origin: ["https://ridewithmeru.netlify.app", "https://ridewithmeru.onrender.com", "http://localhost:3000"], 
-    credentials: true // Crucial for sessions/cookies
+    // UPDATED: Added Rider and Retailer Netlify URLs to allowed origins
+    origin: [
+        "https://ridewithmeru.netlify.app", 
+        "https://ridewithmeru-riders.netlify.app", 
+        "https://ridewithmeru-partners.netlify.app",
+        "https://ridewithmeru.onrender.com", 
+        "http://localhost:3000",
+        "http://127.0.0.1:5500" // Added for local live-server testing
+    ], 
+    credentials: true // Crucial for sessions/cookies to work on iPhone
 }));
 
 // --- DB CONNECTION ---
@@ -36,7 +43,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // --- PATHING LOGIC ---
-// This remains for local testing or if you use Render to serve some assets
 const frontendPath = path.join(__dirname, '..', 'frontend');
 app.use(express.static(frontendPath));
 
@@ -50,9 +56,9 @@ app.use(session({
         collectionName: 'sessions' 
     }),
     cookie: {
-        secure: true,      // Required for HTTPS
+        secure: true,      // Required for HTTPS (Render)
         httpOnly: true,    // Protects against XSS
-        sameSite: 'none',  // Required for cross-domain sessions
+        sameSite: 'none',  // Required for cross-domain sessions (Safari/iPhone requirement)
         maxAge: 1000 * 60 * 60 * 24 
     }
 }));
@@ -108,11 +114,38 @@ app.get('/api/user-data', async (req, res) => {
     }
 });
 
+// --- NEW: DIRECT PASSWORD RESET API (NO OTP) ---
+app.patch('/api/auth/direct-reset', async (req, res) => {
+    try {
+        const { phone, newPassword } = req.body;
+        if (!phone || !newPassword) return res.status(400).json({ success: false, message: "Missing data." });
+
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
+        const user = await User.findOneAndUpdate(
+            { phone: phone },
+            { password: hashedPassword },
+            { new: true }
+        );
+
+        if (user) {
+            res.json({ success: true, message: "Database updated successfully!" });
+        } else {
+            res.status(404).json({ success: false, message: "No account found with this phone number." });
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Database update failed." });
+    }
+});
+
 // Logout API
 app.post('/api/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) return res.status(500).json({ success: false });
-        res.clearCookie('connect.sid', { sameSite: 'none', secure: true });
+        res.clearCookie('connect.sid', { 
+            sameSite: 'none', 
+            secure: true, 
+            httpOnly: true 
+        });
         res.json({ success: true });
     });
 });
