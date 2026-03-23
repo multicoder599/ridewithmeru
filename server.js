@@ -142,7 +142,10 @@ app.patch('/api/auth/direct-reset', async (req, res) => {
         res.status(500).json({ success: false, message: "Database update failed." });
     }
 });
-
+mongoose.connect(DB_URI, {
+    serverSelectionTimeoutMS: 5000, // fail fast instead of hanging
+    connectTimeoutMS: 10000,
+})
 // Logout API
 app.post('/api/logout', (req, res) => {
     req.session.destroy(err => {
@@ -161,5 +164,14 @@ app.post('/api/logout', (req, res) => {
 app.get('*', (req, res) => {
     res.sendFile(path.join(frontendPath, 'index.html'));
 });
+// Add this at the bottom of your server.js, before app.listen
+const https = require('https');
+setInterval(() => {
+    https.get('https://ridewithmeru.onrender.com/api/health', (res) => {
+        console.log(`Keep-alive ping: ${res.statusCode}`);
+    }).on('error', () => {});
+}, 14 * 60 * 1000); // Every 14 minutes
 
+// Also add a health endpoint
+app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 app.listen(PORT, () => console.log(`🚀 RideWithMeru Hub Live on Port ${PORT}`));
