@@ -26,11 +26,11 @@ app.use(helmet({ contentSecurityPolicy: false }));
 app.set('trust proxy', 1); // Crucial for Render's load balancer
 
 const allowedOrigins = [
-    "https://ridewithmeru.netlify.app", 
-    "https://ridewithmeru-riders.netlify.app", 
-    "https://ridewithmeru-partners.netlify.app",
-    "https://merurider.netlify.app", 
-    "https://meruretail.netlify.app",
+    "https://ridewithmeru.surge.sh", 
+    "https://ridewithmeru-riders.surge.sh", 
+    "https://ridewithmeru-partners.surge.sh",
+    "https://merurider.surge.sh", 
+    "https://meruretail.surge.sh",
     "https://ridewithmeru.onrender.com", 
     "http://localhost:3000",
     "http://127.0.0.1:5500"
@@ -67,7 +67,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // --- PATHING LOGIC ---
-const frontendPath = path.join(__dirname, '..', 'frontend');
+const frontendPath = path.join(__dirname, 'frontend');
 app.use(express.static(frontendPath));
 
 // --- SESSION CONFIG ---
