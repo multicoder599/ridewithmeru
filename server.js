@@ -27,8 +27,6 @@ app.set('trust proxy', 1); // Crucial for Render's load balancer
 
 const allowedOrigins = [
     "https://ridewithmeru.surge.sh", 
-    "https://ridewithmeru-riders.surge.sh", 
-    "https://ridewithmeru-partners.surge.sh",
     "https://merurider.surge.sh", 
     "https://meruretail.surge.sh",
     "https://ridewithmeru.onrender.com", 
