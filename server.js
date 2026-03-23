@@ -66,6 +66,14 @@ mongoose.connect(DB_URI, DB_OPTIONS)
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Auth Guard Middleware for Protected Routes
+const requireAuth = (req, res, next) => {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, message: 'Unauthorized. Please log in.' });
+    }
+    next();
+};
+
 // --- PATHING LOGIC ---
 const frontendPath = path.join(__dirname, 'frontend');
 app.use(express.static(frontendPath));
@@ -140,7 +148,7 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// Login (Updated to accept email OR phone)
+// Login
 app.post('/api/login', async (req, res) => {
     try {
         const { email, phone, password } = req.body;
@@ -167,9 +175,8 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// User Data
-app.get('/api/user-data', async (req, res) => {
-    if (!req.session.user) return res.status(401).json({ success: false });
+// User Data (Protected)
+app.get('/api/user-data', requireAuth, async (req, res) => {
     try {
         const user = await User.findById(req.session.user.id).select('-password');
         res.json({ success: true, user });
@@ -178,7 +185,7 @@ app.get('/api/user-data', async (req, res) => {
     }
 });
 
-// Password Reset
+// Password Reset (Unprotected, via phone verification)
 app.patch('/api/auth/direct-reset', async (req, res) => {
     try {
         const { phone, newPassword } = req.body;
@@ -215,7 +222,96 @@ app.post('/api/logout', (req, res) => {
     });
 });
 
-// Fallback
+// --- NEW FUNCTIONAL ROUTES (SETTINGS, HISTORY, DANGER ZONE) ---
+
+// Get Activity/Transactions
+app.get('/api/activity', requireAuth, async (req, res) => {
+    try {
+        const activities = await Transaction.find({ userId: req.session.user.id }).sort({ createdAt: -1 });
+        res.json({ success: true, activities });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Failed to load activity." });
+    }
+});
+
+// Update Profile Name & Email
+app.patch('/api/update-profile', requireAuth, async (req, res) => {
+    try {
+        const { name, email } = req.body;
+        await User.findByIdAndUpdate(req.session.user.id, { name, email });
+        req.session.user.name = name; // Sync session
+        res.json({ success: true, message: "Profile updated." });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Failed to update profile." });
+    }
+});
+
+// Update Password securely
+app.patch('/api/update-password', requireAuth, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const user = await User.findById(req.session.user.id);
+        
+        if (!(await bcrypt.compare(currentPassword, user.password))) {
+            return res.status(400).json({ success: false, message: "Incorrect current password." });
+        }
+        
+        user.password = await bcrypt.hash(newPassword, 12);
+        await user.save();
+        res.json({ success: true, message: "Password updated successfully." });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Failed to update password." });
+    }
+});
+
+// Update Notification Preferences
+app.patch('/api/update-preferences', requireAuth, async (req, res) => {
+    try {
+        const { preference, value } = req.body;
+        const updateField = `preferences.${preference}`;
+        await User.findByIdAndUpdate(req.session.user.id, { $set: { [updateField]: value } });
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Failed to update preference." });
+    }
+});
+
+// Danger Zone: Clear History
+app.delete('/api/clear-history', requireAuth, async (req, res) => {
+    try {
+        await Transaction.deleteMany({ userId: req.session.user.id });
+        res.json({ success: true, message: "History cleared." });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Failed to clear history." });
+    }
+});
+
+// Danger Zone: Deactivate Account
+app.patch('/api/deactivate-account', requireAuth, async (req, res) => {
+    try {
+        await User.findByIdAndUpdate(req.session.user.id, { status: 'inactive' });
+        req.session.destroy();
+        res.clearCookie('connect.sid', { sameSite: 'none', secure: true, httpOnly: true, partitioned: true });
+        res.json({ success: true, message: "Account deactivated." });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Failed to deactivate account." });
+    }
+});
+
+// Danger Zone: Delete Account & Data Permanently
+app.delete('/api/delete-account', requireAuth, async (req, res) => {
+    try {
+        await Transaction.deleteMany({ userId: req.session.user.id });
+        await User.findByIdAndDelete(req.session.user.id);
+        req.session.destroy();
+        res.clearCookie('connect.sid', { sameSite: 'none', secure: true, httpOnly: true, partitioned: true });
+        res.json({ success: true, message: "Account deleted." });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Failed to delete account." });
+    }
+});
+
+// --- FALLBACK ---
 app.get('*', (req, res) => {
     res.sendFile(path.join(frontendPath, 'index.html'));
 });
