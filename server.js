@@ -124,25 +124,39 @@ io.on('connection', (socket) => {
 // Health Check
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
-// Registration
+// Registration (Upgraded to handle duplicates and rider fields)
 app.post('/api/register', async (req, res) => {
     try {
-        const { name, email, password, phone, role } = req.body;
-        const exists = await User.findOne({ email: email.toLowerCase() });
-        if (exists) return res.status(400).json({ success: false, message: "Email already in use." });
+        const { name, email, password, phone, role, vehicleType, plate } = req.body;
+        
+        // 1. Check if Phone already exists (Phone is primary login)
+        const phoneExists = await User.findOne({ phone: phone });
+        if (phoneExists) return res.status(400).json({ success: false, message: "Phone number already registered." });
+
+        // 2. Check if Email already exists (If provided)
+        if (email) {
+            const emailExists = await User.findOne({ email: email.toLowerCase() });
+            if (emailExists) return res.status(400).json({ success: false, message: "Email already registered." });
+        }
 
         const hashedPassword = await bcrypt.hash(password, 12);
+        
         const newUser = new User({ 
             name, 
-            email: email.toLowerCase(), 
+            email: email ? email.toLowerCase() : undefined, 
             password: hashedPassword, 
             phone, 
-            role: role || 'Customer' 
+            role: role || 'Customer',
+            vehicleType, // Save Rider Vehicle Type
+            plate        // Save Rider Number Plate
         });
+        
         await newUser.save();
         res.status(201).json({ success: true, message: "Account created successfully!" });
+        
     } catch (err) {
-        res.status(500).json({ success: false, message: "Server error during registration." });
+        console.error("Registration Error Details:", err); // Will show exactly what broke in Render Logs
+        res.status(500).json({ success: false, message: "Server error during registration. Check logs." });
     }
 });
 
