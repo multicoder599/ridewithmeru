@@ -146,29 +146,38 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// Login
+// Login (Fixed Database Query)
 app.post('/api/login', async (req, res) => {
     try {
         const { email, phone, password } = req.body;
         
-        const user = await User.findOne({ 
-            $or: [
-                { email: email ? email.toLowerCase() : null },
-                { phone: phone }
-            ]
-        });
+        // 1. Dynamically build the search query so we don't accidentally search for 'null'
+        const searchCriteria = [];
+        if (email) searchCriteria.push({ email: email.toLowerCase() });
+        if (phone) searchCriteria.push({ phone: phone });
 
+        // Reject if they sent neither
+        if (searchCriteria.length === 0) {
+            return res.status(400).json({ success: false, message: "Provide email or phone number." });
+        }
+
+        // 2. Find the exact user
+        const user = await User.findOne({ $or: searchCriteria });
+
+        // 3. Verify User & Password
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ success: false, message: "Invalid credentials." });
         }
         
+        // 4. Save Session
         req.session.user = { id: user._id, name: user.name, role: user.role };
         
         req.session.save((err) => {
-            if (err) return res.status(500).json({ success: false });
+            if (err) return res.status(500).json({ success: false, message: "Session error." });
             res.json({ success: true, role: user.role });
         });
     } catch (err) {
+        console.error("Login Route Error:", err);
         res.status(500).json({ success: false, message: "Server error during login." });
     }
 });
